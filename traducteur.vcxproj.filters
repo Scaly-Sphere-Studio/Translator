@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="h\backend.h">
+    <ClInclude Include="h\backend.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="h\data.h">
+    <ClInclude Include="h\data.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="h\frontend.h">
+    <ClInclude Include="h\frontend.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
