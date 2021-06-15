@@ -2,15 +2,15 @@
 #include <nlohmann/json.hpp>
 
 #include "frontend.hpp"
-#include <chrono>
 
 
 
-//todo generate string ID for each string stored
+//todo generate string ID for each text data stored
 //todo stringify and parse json to save data
 int main()
 {
-	for (int i = 0; i < 100; i++) {
-		std::cout << time_stamp() << std::endl;
-	}
+	std::fstream fs;
+	fs.open("trad.json", std::fstream::in | std::fstream::out | std::fstream::app);
+	fs << "petit test pour le json appendising" << std::endl;
+	fs.close();
 }

@@ -8,10 +8,11 @@ std::string time_stamp()
 
 std::string ID_text_data_stringify(std::string cat, std::string sub_cat, std::string time_stamp)
 {
-	return SSS::toString(cat + "_"+ sub_cat + "_" + time_stamp);
+	//Text ID : CAT_SUB_HEXTIMESTAMP
+	return cat + "_"+ sub_cat + "_" + time_stamp;
 }
 
 std::string ID_trad_file_stringify(std::string userID, std::string time_stamp)
 {
-	return std::string(SSS::toString(userID + "_" + time_stamp));
+	return userID + "_" + time_stamp;
 }
