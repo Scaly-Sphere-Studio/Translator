@@ -11,5 +11,9 @@ int main()
 		create_folder(folder);
 	}
 
+	std::filesystem::current_path(folder);
+	std::ofstream("trad.json");
+
+
 	return 0;
 }
