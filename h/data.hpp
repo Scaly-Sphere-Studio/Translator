@@ -2,11 +2,20 @@
 
 #include <array>
 #include <string>
+#include <stdint.h>
+
+class Evaluation : std::array<uint16_t, 5>
+{
+public :
+	Evaluation();
+	float average() const;
+	uint32_t count() const;
+};
 
 
 struct traduction_data {
 	std::string trad_ID;
-	unsigned int language;
+	uint32_t language;
 	bool mother_file = 0;
 };
 
@@ -14,14 +23,14 @@ struct traduction_data {
 struct user_data {
 	std::string user_ID;
 	std::array<unsigned int, 3> languages;
-	std::array<unsigned int, 5> evaluation{ 0 };
-	unsigned int trad_qty;
+	Evaluation user_eval;
+	uint32_t trad_qty;
 };
 
 struct text_data {
 	std::string text_ID;
 	std::string text;
 	std::string comment;
-	unsigned int language = 0;
-	std::array<unsigned int, 5> evaluation{ 0 };
+	uint32_t language = 0;
+	Evaluation text_eval;
 };

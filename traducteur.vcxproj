@@ -24,6 +24,7 @@
     <ClInclude Include="h\frontend.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="h\data.cpp" />
     <ClCompile Include="src\backend.cpp" />
     <ClCompile Include="src\frontend.cpp" />
     <ClCompile Include="src\main.cpp" />

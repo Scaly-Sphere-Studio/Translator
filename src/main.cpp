@@ -6,14 +6,13 @@
 int main()
 {
 
-	std::string folder = "traduction";
-	if (!check_folder_exists(folder)) {
-		create_folder(folder);
-	}
+	//std::string folder = "traduction";
+	//if (!check_folder_exists(folder)) {
+	//	create_folder(folder);
+	//}
 
-	std::filesystem::current_path(folder);
-	std::ofstream("trad.json");
-
+	//std::filesystem::current_path(folder);
+	//std::ofstream("trad.json");
 
 	return 0;
 }
