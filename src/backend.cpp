@@ -3,7 +3,7 @@
 std::string time_stamp()
 {
 	//Access the TAI(Internation Atomic Time) and convert its value into a hex string
-	return hex_convertor(std::chrono::tai_clock::now().time_since_epoch().count());
+	return hex_convertor(std::chrono::steady_clock::now().time_since_epoch().count());
 }
 
 std::string ID_text_data_stringify(std::string cat, std::string sub_cat, std::string time_stamp)

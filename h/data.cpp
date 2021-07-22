@@ -6,6 +6,11 @@ Evaluation::Evaluation()
 	fill(0);
 }
 
+Evaluation::Evaluation(const std::array<uint16_t, 5> init_array)
+{
+	*this = init_array;
+}
+
 float Evaluation::average() const
 {
 	float count = 0, mean = 0;

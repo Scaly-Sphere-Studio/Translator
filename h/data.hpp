@@ -4,10 +4,24 @@
 #include <string>
 #include <stdint.h>
 
-class Evaluation : std::array<uint16_t, 5>
+#include <nlohmann/json.hpp>
+
+
+
+class Evaluation : public std::array<uint16_t, 5>
 {
 public :
 	Evaluation();
+	Evaluation(const std::array<uint16_t, 5> init_array);
+
+	Evaluation operator=(std::array<uint16_t, 5> assign_array) {
+		for (rsize_t i = 0; i < 5; i++) {
+			this->at(i) = assign_array[i];
+		}
+		return *this;
+	}
+
+
 	float average() const;
 	uint32_t count() const;
 };
@@ -28,6 +42,7 @@ struct user_data {
 };
 
 struct text_data {
+public :
 	std::string text_ID;
 	std::string text;
 	std::string comment;
