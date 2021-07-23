@@ -6,11 +6,21 @@
 
 
 
-void parse_traduction_json(const Traduction_data& src_trad_data, const std::vector<Text_data>& src_txt_data, const std::string& file_path) 
+void parse_traduction_data_to_json(const Traduction_data& src_trad_data, const std::vector<Text_data>& src_txt_data, const std::string& file_path) 
 {
-	nlohmann::json dst;
-	
 
+
+};
+
+
+Text_data rng_data() {
+	Text_data rng;
+	rng.text_ID = time_stamp();
+	rng.text = time_stamp();
+	rng.comment = time_stamp();
+	rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};
+	
+	return rng;
 };
 
 
@@ -23,41 +33,21 @@ int main()
 	//}
 	//std::filesystem::current_path(folder);
 	
+
 	Traduction_data test_trad;
-	std::vector<nlohmann::json> j_vec;
-	std::vector<Text_data> t_data;
+	test_trad.language = 0;
+	test_trad.mother_file = 1;
+	test_trad.trad_ID = time_stamp();
 
-	
-	std::ifstream ifs("trad.json");
-	nlohmann::json j;
-
-	ifs >> j;
-	std::cout << j << std::endl;
-
-	std::vector<nlohmann::json> parsed;
-	j.at("data").get_to(parsed);
-
-	for (nlohmann::json json : parsed) {
-		std::cout << json << std::endl;
+	for (size_t i = 0; i < 100; i++) {
+		test_trad.text_data.emplace_back(rng_data());
 	}
-	//Create an array of data
-	parse_traduction_json(test_trad, t_data, "trad.json");
+	//
+	////Create an array of data
+	//export_data_json("trad.json", test_trad.parse_traduction_data_to_json());
 
 
-	/*text_data text;
-	text.text_ID = "id_test01";
-	text.text = "this is the text for the trad";
-	text.comment = "petit test ?";
-	text.language = 0;
-	text.text_eval = std::array<uint16_t, 5>{ 25,0,35,84,125 };
-	
-	nlohmann::json test;
-	test["text"] = text.text;
-	test["id"] = text.text_ID;
-	test["comment"] = text.comment;
-	test["language"] = text.language;
-	test["evaluation"] = text.text_eval;
-	o << std::setw(4) << test << std::endl;*/
+	std::cout << test_trad;
 
 	return 0;
 }

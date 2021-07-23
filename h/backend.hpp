@@ -1,8 +1,8 @@
 #pragma once
 
 #include "data.hpp"
-#include <filesystem>
 #include <fstream>
+#include <filesystem>
 #include <chrono>
 #include <string>
 
@@ -45,6 +45,10 @@ void create_folder(std::string &path);
 //Check if the path is absolute and convert it if necessary
 std::string absolute_path(std::string &path);
 
+//Exportation files command
+//JSON
+void export_data_json(const std::string& path, const nlohmann::json& src);
+void import_data_json(const std::string& path, Text_data& dst);
 
 //////////////////
 /*BASE DE DONNEE*/

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <iostream>
 #include <array>
 #include <string>
 #include <stdint.h>
+
 
 #include <SSS/commons.hpp>
 #include <nlohmann/json.hpp>
@@ -28,20 +30,21 @@ public :
 		}
 		return *this;
 	}
+	friend std::ostream &operator<<(std::ostream& output, const Evaluation& eval) {
+		output << "["
+			<< eval.at(0) << "," 
+			<< eval.at(1) << "," 
+			<< eval.at(2) << "," 
+			<< eval.at(3) << "," 
+			<< eval.at(4) << "]";
+		return output;
+	}
 
 	//METHOD FOR DATA COMPARISON
 	float average() const;
 	uint32_t count() const;
 
 	
-};
-
-
-struct Traduction_data {
-	std::string trad_ID;
-	uint32_t language = 0;
-	bool mother_file = 0;
-	float trad_evaluation = 0.0f;
 };
 
 
@@ -59,10 +62,38 @@ public :
 	std::string comment;
 	Evaluation text_eval;
 
+	friend std::ostream& operator<<(std::ostream& output, const Text_data& txt) {
+		output << "[ID]:" << txt.text_ID <<
+			", [TEXT]:" << txt.text;
+		return output;
+	}
 	//CONVERSION
-	static void to_json(nlohmann::json& file_dst, const Text_data& data_src);
-	static void from_json(Text_data& data_dst, const nlohmann::json& file_src);
+	static nlohmann::json to_json(const Text_data& data_src);
+	static Text_data from_json(const nlohmann::json& file_src);
 	
 	//LOG
 	std::string print_data();
+};
+
+struct Traduction_data {
+	std::string trad_ID;
+	uint32_t language = 0;
+	bool mother_file = 0;
+	float trad_evaluation = 0.0f;
+	std::vector<Text_data> text_data;
+
+	friend std::ostream& operator<<(std::ostream& output, const Traduction_data& trad) {
+		output << "[TRAD_ID]:" << trad.trad_ID <<
+			", [LANGUAGE]:" << trad.language;
+		if (trad.mother_file) {
+			output << ", [MOTHER_FILE]" << std::endl;
+		}
+
+		for (Text_data txt : trad.text_data) {
+			output << txt << std::endl;
+		}
+		return output;
+	}
+
+	nlohmann::json parse_traduction_data_to_json();
 };
