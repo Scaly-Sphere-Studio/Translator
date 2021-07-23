@@ -37,31 +37,31 @@ public :
 };
 
 
-struct traduction_data {
+struct Traduction_data {
 	std::string trad_ID;
-	uint32_t language;
+	uint32_t language = 0;
 	bool mother_file = 0;
+	float trad_evaluation = 0.0f;
 };
 
 
-struct user_data {
+struct User_data {
 	std::string user_ID;
 	std::array<unsigned int, 3> languages;
 	Evaluation user_eval;
 	uint32_t trad_qty;
 };
 
-struct text_data {
+struct Text_data {
 public :
 	std::string text_ID;
 	std::string text;
 	std::string comment;
-	uint32_t language = 0;
 	Evaluation text_eval;
 
 	//CONVERSION
-	static void to_json(nlohmann::json& file_dst, const text_data& data_src);
-	static void from_json(text_data& data_dst, const nlohmann::json& file_src);
+	static void to_json(nlohmann::json& file_dst, const Text_data& data_src);
+	static void from_json(Text_data& data_dst, const nlohmann::json& file_src);
 	
 	//LOG
 	std::string print_data();

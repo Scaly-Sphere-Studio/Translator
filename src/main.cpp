@@ -4,35 +4,45 @@
 #include "frontend.hpp"
 #include "backend.hpp"
 
+
+
+void parse_traduction_json(const Traduction_data& src_trad_data, const std::vector<Text_data>& src_txt_data, const std::string& file_path) 
+{
+	nlohmann::json dst;
+	
+
+};
+
+
 int main()
 {
-
+	//Check if the folder traduction exist and create/update the file in it
 	//std::string folder = "traduction";
 	//if (!check_folder_exists(folder)) {
 	//	create_folder(folder);
 	//}
-	std::vector<nlohmann::json> j_vec;
-	std::vector<text_data> t_data;
 	//std::filesystem::current_path(folder);
+	
+	Traduction_data test_trad;
+	std::vector<nlohmann::json> j_vec;
+	std::vector<Text_data> t_data;
+
+	
 	std::ifstream ifs("trad.json");
 	nlohmann::json j;
-	
-	unsigned int djks = 0;
+
 	ifs >> j;
-	j_vec.emplace_back(j);
+	std::cout << j << std::endl;
 
+	std::vector<nlohmann::json> parsed;
+	j.at("data").get_to(parsed);
 
-	std::cout << "SIZE : " << j_vec.size() << std::endl;
-	text_data t;
-	for (size_t i = 0; i < j_vec.size(); i++) {
-		text_data::from_json(t, j_vec[i]);
-		t_data.emplace_back(t);
+	for (nlohmann::json json : parsed) {
+		std::cout << json << std::endl;
 	}
-	for (size_t i = 0; i < j_vec.size(); i++) {
-		std::cout << SSS::toString(j_vec[i]) << std::endl;
-		std::cout << t_data[i].print_data() << std::endl;
-	}
-	
+	//Create an array of data
+	parse_traduction_json(test_trad, t_data, "trad.json");
+
 
 	/*text_data text;
 	text.text_ID = "id_test01";
@@ -40,6 +50,7 @@ int main()
 	text.comment = "petit test ?";
 	text.language = 0;
 	text.text_eval = std::array<uint16_t, 5>{ 25,0,35,84,125 };
+	
 	nlohmann::json test;
 	test["text"] = text.text;
 	test["id"] = text.text_ID;
