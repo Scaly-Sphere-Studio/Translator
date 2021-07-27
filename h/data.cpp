@@ -1,6 +1,5 @@
 #include "data.hpp"
 
-
 Evaluation::Evaluation()
 {
 	fill(0);
@@ -32,66 +31,78 @@ uint32_t  Evaluation::count() const
 	return count;
 }
 
-nlohmann::json Text_data::to_json(const Text_data& data_src)
+float Traduction_data::mean_evaluation()
 {
-	nlohmann::json tmp;
-	tmp = nlohmann::json{
-		{"id", data_src.text_ID},
-		{"text", data_src.text},
-		{"comment", data_src.comment},
-		{"evaluation", data_src.text_eval}
-	};
-
-	return tmp;
-}
-
-Text_data Text_data::from_json(const nlohmann::json& file_src)
-{
-	Text_data tmp_data;
-	file_src.at("id").get_to(tmp_data.text_ID);
-	file_src.at("text").get_to(tmp_data.text);
-	file_src.at("comment").get_to(tmp_data.comment);
-	file_src.at("evaluation")
-		.get_to(static_cast<std::array<uint16_t, 5>&>(tmp_data.text_eval));
-
-	return tmp_data;
-}
-
-std::string Text_data::print_data()
-{
-	std::string tmp_string;
-	tmp_string += "ID : " + text_ID;
-	tmp_string += "; text : " + text;
-	tmp_string += "; comment : " + comment;
-	tmp_string += "; Evaluation : [";
-	for (size_t i = 0; i < 5; i++) {
-		tmp_string += SSS::toString(text_eval[i]) + ",";
+	float mean = 0;
+	for (Text_data t : text_data) {
+		mean += t.text_eval.average();
 	}
-	tmp_string += "]";
 
-	return tmp_string;
+	return mean / static_cast<float>(text_data.size());
 }
 
-nlohmann::json Traduction_data::parse_traduction_data_to_json()
+void Traduction_data::print()
+{
+	std::cout << *this;
+}
+
+void Traduction_data::parse_traduction_data_to_json(const std::string& path)
 {
 	nlohmann::json dst;
+	dst = *this;
 
-	//Store a json objects array
-	std::vector<nlohmann::json> j_data;
-	j_data.reserve(text_data.size());
-
-	//Fill the json objects array
-	for (size_t i = 0; i < text_data.size(); i++) {
-		j_data.emplace_back(Text_data::to_json(text_data[i]));
-	}
-
-	//Create the complete json object
-	dst = nlohmann::json{
-		{"_MOTHER_FILE", mother_file},
-		{"_LANGUAGE", language},
-		{"_TRADUCTION_ID", trad_ID},
-		{"DATA", j_data}
-	};
-
-	return dst;
+	std::ofstream ofs(path);
+	ofs << std::setw(4) << dst << std::endl;
+	ofs.close();
 }
+
+void Traduction_data::parse_traduction_data_from_json(const std::string& path)
+{
+	std::ifstream ifs(path);
+	nlohmann::json tmp;
+	ifs >> tmp;
+	ifs.close();
+
+	*this = tmp;
+	trad_evaluation = mean_evaluation();
+}
+
+
+void to_json(nlohmann::json& j, const Text_data& p)
+{
+	j = nlohmann::json{
+		{"id", p.text_ID},
+		{"text", p.text},
+		{"comment", p.comment},
+		{"evaluation", p.text_eval}
+	};
+}
+
+void from_json(const nlohmann::json& j, Text_data& t)
+{
+	j.at("id").get_to(t.text_ID);
+	j.at("text").get_to(t.text);
+	j.at("comment").get_to(t.comment);
+	j.at("evaluation")
+		.get_to(static_cast<std::array<uint16_t, 5>&>(t.text_eval));
+
+}
+
+void to_json(nlohmann::json& j, const Traduction_data& t)
+{
+	j = nlohmann::json{
+		{"DATA", t.text_data},
+		{"LANGUAGE", t.language},
+		{"TRADUCTION_ID", t.trad_ID},
+		{"MOTHER_FILE", t.mother_file},
+	};
+}
+
+void from_json(const nlohmann::json& j, Traduction_data& t)
+{
+	j.at("DATA").get_to(t.text_data);
+	j.at("LANGUAGE").get_to(t.language);
+	j.at("TRADUCTION_ID").get_to(t.trad_ID);
+	j.at("MOTHER_FILE").get_to(t.mother_file);
+}
+ 

@@ -54,9 +54,3 @@ std::string absolute_path(std::string& path)
 	return absolute_path;
 }
 
-void export_data_json(const std::string& path, const nlohmann::json &src)
-{
-	std::ofstream ofs(path);
-	ofs << std::setw(4) << src << std::endl;
-	ofs.close();
-}

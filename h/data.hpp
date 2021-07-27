@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <array>
 #include <string>
 #include <stdint.h>
@@ -42,9 +44,7 @@ public :
 
 	//METHOD FOR DATA COMPARISON
 	float average() const;
-	uint32_t count() const;
-
-	
+	uint32_t count() const;	
 };
 
 
@@ -62,26 +62,28 @@ public :
 	std::string comment;
 	Evaluation text_eval;
 
+	//LOG AND OPERATOR OVERLOADS
 	friend std::ostream& operator<<(std::ostream& output, const Text_data& txt) {
 		output << "[ID]:" << txt.text_ID <<
 			", [TEXT]:" << txt.text;
 		return output;
 	}
-	//CONVERSION
-	static nlohmann::json to_json(const Text_data& data_src);
-	static Text_data from_json(const nlohmann::json& file_src);
-	
-	//LOG
-	std::string print_data();
 };
 
-struct Traduction_data {
+class Traduction_data {
+private:
+	float mean_evaluation();
+public:
+
+	void print();
+	//DATA
 	std::string trad_ID;
 	uint32_t language = 0;
 	bool mother_file = 0;
 	float trad_evaluation = 0.0f;
 	std::vector<Text_data> text_data;
 
+	//OPERATOR OVERLOAD
 	friend std::ostream& operator<<(std::ostream& output, const Traduction_data& trad) {
 		output << "[TRAD_ID]:" << trad.trad_ID <<
 			", [LANGUAGE]:" << trad.language;
@@ -95,5 +97,13 @@ struct Traduction_data {
 		return output;
 	}
 
-	nlohmann::json parse_traduction_data_to_json();
+	void parse_traduction_data_to_json(const std::string& path);
+	void parse_traduction_data_from_json(const std::string &path);
 };
+
+
+//JSON CONVERTION
+void to_json(nlohmann::json& j, const Text_data& t);
+void from_json(const nlohmann::json& j, Text_data& t);
+void to_json(nlohmann::json& j, const Traduction_data& t);
+void from_json(const nlohmann::json& j, Traduction_data& t);

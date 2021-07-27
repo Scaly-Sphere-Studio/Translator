@@ -33,21 +33,5 @@ int main()
 	//}
 	//std::filesystem::current_path(folder);
 	
-
-	Traduction_data test_trad;
-	test_trad.language = 0;
-	test_trad.mother_file = 1;
-	test_trad.trad_ID = time_stamp();
-
-	for (size_t i = 0; i < 100; i++) {
-		test_trad.text_data.emplace_back(rng_data());
-	}
-	//
-	////Create an array of data
-	//export_data_json("trad.json", test_trad.parse_traduction_data_to_json());
-
-
-	std::cout << test_trad;
-
 	return 0;
 }
