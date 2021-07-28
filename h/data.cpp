@@ -46,13 +46,19 @@ void Traduction_data::print()
 	std::cout << *this;
 }
 
-void Traduction_data::parse_traduction_data_to_json(const std::string& path)
+void Traduction_data::parse_traduction_data_to_json(const std::string& path, const bool prettify)
 {
 	nlohmann::json dst;
 	dst = *this;
 
 	std::ofstream ofs(path);
-	ofs << std::setw(4) << dst << std::endl;
+	if (prettify) {
+		ofs << std::setw(4) << dst << std::endl;
+	}
+	else {
+		ofs << dst << std::endl;
+	}
+	
 	ofs.close();
 }
 
@@ -123,5 +129,21 @@ void from_json(const nlohmann::json& j, Traduction_data& t)
 	j.at("LANGUAGE").get_to(t.language);
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
 	j.at("MOTHER_FILE").get_to(t.mother_file);
+}
+
+void to_json(nlohmann::json& j, const Trad_info& t)
+{
+	j = nlohmann::json{
+		{"MOTHER_LANGUAGE", t.mother_language},
+		{"TRAD_LANGUAGES", t.trad_languages},
+		{"TRADUCTION_ID", t.trad_ID}
+	};
+}
+
+void from_json(const nlohmann::json& j, Trad_info& t)
+{
+	j.at("TRAD_LANGUAGES").get_to(t.trad_languages);
+	j.at("TRADUCTION_ID").get_to(t.trad_ID);
+	j.at("MOTHER_FILE").get_to(t.mother_language);
 }
  

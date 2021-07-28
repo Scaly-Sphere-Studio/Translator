@@ -39,6 +39,11 @@ void create_folder(std::string &path)
 	SSS::log_msg("[FILE] : Generating : \"" + absolute_path(path) + "\" folder");
 }
 
+void create_file(const std::string& name)
+{
+	std::ofstream ofs(name); 
+}
+
 std::string absolute_path(std::string& path)
 {
 	std::string absolute_path;
@@ -53,6 +58,42 @@ std::string absolute_path(std::string& path)
 
 	return absolute_path;
 }
+
+void create_traduction_file(std::string& path, uint16_t language, Traduction_data& mother)
+{
+	
+
+	Traduction_data t;
+	t.language = language;
+	if (mother.mother_file == 1) {
+		//text copied from the mother language file
+		t.mother_file = 0;
+	}
+	else {
+		//text copied from another daughter file
+		//Warning during creation process, loss of information during this traduction
+		t.mother_file = 2;
+	}
+
+	t.trad_ID = mother.trad_ID;
+	
+	//init the traduction file
+	//and create an empty copy of all the text data and their ID from the mother file
+	t.text_data.reserve(mother.text_data.size());
+	Text_data d;
+	for (size_t i = 0; i < mother.text_data.size(); i++)
+	{
+		d.text_ID = mother.text_data[i].text_ID;
+		t.text_data.emplace_back(d);
+	}
+
+
+}
+
+void gen_info_traduction_file(const std::string& path)
+{
+}
+
 
 void string_compare(const std::string& first, const std::string& second)
 {

@@ -81,7 +81,7 @@ public:
 	std::string trad_ID;
 	std::string User_ID;
 	uint32_t language = 0;
-	bool mother_file = 0;
+	uint16_t mother_file = 0;
 	float trad_evaluation = 0.0f;
 	std::vector<Text_data> text_data;
 
@@ -102,11 +102,22 @@ public:
 	void parse_traduction_data_to_json(const std::string& path);
 	void parse_traduction_data_from_json(const std::string &path);
 	void push_text_data(std::string text, std::string comment, std::string ID);
+	void remove_text_data(std::string ID);
 };
 
 
+struct Trad_info {
+	uint32_t mother_language;
+	std::vector<uint32_t> trad_languages;
+};
+
 //JSON CONVERTION
+//Text data convertion
 void to_json(nlohmann::json& j, const Text_data& t);
 void from_json(const nlohmann::json& j, Text_data& t);
+//Traduction data convertion
 void to_json(nlohmann::json& j, const Traduction_data& t);
 void from_json(const nlohmann::json& j, Traduction_data& t);
+//Traduction infos
+void to_json(nlohmann::json& j, const Trad_info& t);
+void from_json(const nlohmann::json& j, Trad_info& t);
