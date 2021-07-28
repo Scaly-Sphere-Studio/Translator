@@ -5,14 +5,6 @@
 #include "backend.hpp"
 
 
-
-void parse_traduction_data_to_json(const Traduction_data& src_trad_data, const std::vector<Text_data>& src_txt_data, const std::string& file_path) 
-{
-
-
-};
-
-
 Text_data rng_data() {
 	Text_data rng;
 	rng.text_ID = time_stamp();
