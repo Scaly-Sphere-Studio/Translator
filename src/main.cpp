@@ -33,5 +33,12 @@ int main()
 	//}
 	//std::filesystem::current_path(folder);
 	
+
+	std::string first = "This is an exemple of speech";
+	std::string second = "And This is an exemple of an other speech";
+
+	string_compare(first, first);
+
+
 	return 0;
 }

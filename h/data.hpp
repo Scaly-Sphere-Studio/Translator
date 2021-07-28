@@ -61,6 +61,7 @@ public :
 	std::string text;
 	std::string comment;
 	Evaluation text_eval;
+	
 
 	//LOG AND OPERATOR OVERLOADS
 	friend std::ostream& operator<<(std::ostream& output, const Text_data& txt) {
@@ -78,6 +79,7 @@ public:
 	void print();
 	//DATA
 	std::string trad_ID;
+	std::string User_ID;
 	uint32_t language = 0;
 	bool mother_file = 0;
 	float trad_evaluation = 0.0f;
@@ -99,6 +101,7 @@ public:
 
 	void parse_traduction_data_to_json(const std::string& path);
 	void parse_traduction_data_from_json(const std::string &path);
+	void push_text_data(std::string text, std::string comment, std::string ID);
 };
 
 

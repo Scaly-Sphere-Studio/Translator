@@ -49,4 +49,4 @@ std::string absolute_path(std::string &path);
 //////////////////
 /*BASE DE DONNEE*/
 //////////////////
-
+void string_compare(const std::string& first, const std::string& second);

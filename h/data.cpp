@@ -67,6 +67,25 @@ void Traduction_data::parse_traduction_data_from_json(const std::string& path)
 	trad_evaluation = mean_evaluation();
 }
 
+void Traduction_data::push_text_data(std::string text, std::string comment, std::string ID)
+{
+	Text_data t;
+	t.comment = comment;
+	t.text = text;
+	t.text_ID = ID;
+
+	text_data.emplace_back(t);
+}
+
+void Traduction_data::remove_text_data(std::string ID)
+{
+	for (size_t i = 0; i < text_data.size(); i++) {
+		if (text_data[i].text_ID == ID) {
+			text_data.erase(text_data.begin() + i);
+		}
+	}
+}
+
 
 void to_json(nlohmann::json& j, const Text_data& p)
 {

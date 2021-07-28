@@ -54,3 +54,11 @@ std::string absolute_path(std::string& path)
 	return absolute_path;
 }
 
+void string_compare(const std::string& first, const std::string& second)
+{
+	if (first == second) {
+		std::cout << "The two strings are identical" << std::endl;
+	}
+	std::cout << first[0];
+}
+
