@@ -39,10 +39,6 @@ void create_folder(std::string &path)
 	SSS::log_msg("[FILE] : Generating : \"" + absolute_path(path) + "\" folder");
 }
 
-void create_file(const std::string& name)
-{
-	std::ofstream ofs(name); 
-}
 
 std::string absolute_path(std::string& path)
 {
@@ -61,7 +57,6 @@ std::string absolute_path(std::string& path)
 
 void create_traduction_file(std::string& path, uint16_t language, Traduction_data& mother)
 {
-	
 
 	Traduction_data t;
 	t.language = language;
@@ -92,14 +87,29 @@ void create_traduction_file(std::string& path, uint16_t language, Traduction_dat
 
 void gen_info_traduction_file(const std::string& path)
 {
+
 }
 
 
 void string_compare(const std::string& first, const std::string& second)
 {
-	if (first == second) {
-		std::cout << "The two strings are identical" << std::endl;
-	}
+	//if ((first.size() || second.size()) == 0) {
+	//	//Check if at least one of the two string is empty
+	//	return;
+	//} 
+	//
+	//else if (first == second) 
+	//{
+	//	//Simply check if the two strings are identicals
+	//	std::cout << "The two strings are identical" << std::endl;
+	//	return;
+	//} else  if (abs(floor(first.length() - second.length()) < floor(first.length() * 0.1))) {
+	//	return;
+	//}
+	//else {
+	//	return;
+	//}
+
 	std::cout << first[0];
 }
 

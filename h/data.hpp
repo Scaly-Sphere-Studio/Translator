@@ -99,7 +99,7 @@ public:
 		return output;
 	}
 
-	void parse_traduction_data_to_json(const std::string& path);
+	void parse_traduction_data_to_json(const std::string& path, const bool prettify = false);
 	void parse_traduction_data_from_json(const std::string &path);
 	void push_text_data(std::string text, std::string comment, std::string ID);
 	void remove_text_data(std::string ID);
@@ -107,6 +107,7 @@ public:
 
 
 struct Trad_info {
+	std::string trad_ID;
 	uint32_t mother_language;
 	std::vector<uint32_t> trad_languages;
 };

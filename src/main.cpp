@@ -5,15 +5,15 @@
 #include "backend.hpp"
 
 
-Text_data rng_data() {
-	Text_data rng;
-	rng.text_ID = time_stamp();
-	rng.text = time_stamp();
-	rng.comment = time_stamp();
-	rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};
-	
-	return rng;
-};
+//Text_data rng_data() {
+//	Text_data rng;
+//	rng.text_ID = time_stamp();
+//	rng.text = time_stamp();
+//	rng.comment = time_stamp();
+//	rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};
+//	
+//	return rng;
+//};
 
 
 int main()

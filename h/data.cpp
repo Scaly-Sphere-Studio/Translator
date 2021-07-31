@@ -15,7 +15,7 @@ float Evaluation::average() const
 	float count = 0, mean = 0;
 	for (float i = 0; i < 5; i++) {
 		count += this->at(i);
-		mean += (i+1) * this->at(i);
+		mean += this->at(i) * (i+1);
 	}
 
 	return mean / count;
@@ -24,7 +24,7 @@ float Evaluation::average() const
 uint32_t  Evaluation::count() const
 {
 	uint32_t count = 0;
-	for (float i = 0; i < 5; i++) {
+	for (uint32_t i = 0; i < 5; i++) {
 		count += this->at(i);
 	}
 
@@ -52,12 +52,12 @@ void Traduction_data::parse_traduction_data_to_json(const std::string& path, con
 	dst = *this;
 
 	std::ofstream ofs(path);
-	if (prettify) {
-		ofs << std::setw(4) << dst << std::endl;
-	}
-	else {
-		ofs << dst << std::endl;
-	}
+	//if (prettify) {
+	//	ofs << std::setw(4) << dst << std::endl;
+	//}
+	//else {
+	//	ofs <<  dst << std::endl;
+	//}
 	
 	ofs.close();
 }
