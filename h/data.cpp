@@ -33,12 +33,14 @@ uint32_t  Evaluation::count() const
 
 float Traduction_data::mean_evaluation()
 {
-	float mean = 0;
-	for (Text_data t : text_data) {
-		mean += t.text_eval.average();
-	}
+	//TODO
+	//float mean = 0;
+	//for (Text_data t : text_data) {
+	//	mean += t.text_eval.average();
+	//}
 
-	return mean / static_cast<float>(text_data.size());
+	//return mean / static_cast<float>(text_data.size());
+	return 0.0f;
 }
 
 void Traduction_data::print()
@@ -79,7 +81,7 @@ void Traduction_data::push_text_data(std::string text, std::string comment, std:
 	t.comment = comment;
 	t.text = text;
 	t.text_ID = ID;
-	t.category = cat;
+	//t.category = cat;
 
 	text_data.emplace_back(t);
 }
@@ -100,7 +102,7 @@ void to_json(nlohmann::json& j, const Text_data& p)
 		{"id", p.text_ID},
 		{"text", p.text},
 		{"comment", p.comment},
-		{"evaluation", p.text_eval},
+		//{"evaluation", p.text_eval},
 		{"category", p.category}
 	};
 }
@@ -110,9 +112,9 @@ void from_json(const nlohmann::json& j, Text_data& t)
 	j.at("id").get_to(t.text_ID);
 	j.at("text").get_to(t.text);
 	j.at("comment").get_to(t.comment);
-	j.at("evaluation")
-		.get_to(static_cast<std::array<uint16_t, 5>&>(t.text_eval));
-	j.at("evaluation").get_to(t.category);
+	//j.at("evaluation")
+	//	.get_to(static_cast<std::array<uint16_t, 5>&>(t.text_eval));
+	j.at("category").get_to(t.category);
 
 }
 
@@ -151,3 +153,17 @@ void from_json(const nlohmann::json& j, Trad_info& t)
 	j.at("MOTHER_FILE").get_to(t.mother_language);
 }
  
+void to_json(nlohmann::json& j, const ISO_CODES& t)
+{
+	j = nlohmann::json{
+	{"CODE", t.code},
+	{"FULLNAME", t.name},
+	};
+}
+
+
+void from_json(const nlohmann::json& j, ISO_CODES& t) 
+{
+	j.at("CODE").get_to(t.code);
+	j.at("FULLNAME").get_to(t.name);
+}

@@ -13,13 +13,47 @@
 #include "backend.hpp"
 
 
+void read_from_text() {
+    std::fstream f("bohemian.txt");
+    std::string str;
+
+    
+
+
+    std::vector<Text_data> rhapsody;
+    while (std::getline(f, str)) {
+        Text_data tmp;
+        tmp.text = str;
+        tmp.category = 2;
+        tmp.text_ID = time_stamp();
+
+        rhapsody.emplace_back(tmp);
+    }
+
+
+    for (Text_data c : rhapsody) {
+        std::cout << c.text << std::endl;
+    }
+
+
+
+    std::string name = "bohemian.json";
+    // write prettified JSON to another file
+    std::ofstream o(name);
+
+
+    nlohmann::json j = rhapsody;
+    o << std::setw(4) << j;
+
+
+};
 
 Text_data rng_data() {
 	Text_data rng;
 	rng.text_ID = time_stamp();
 	rng.text = time_stamp();
 	rng.comment = time_stamp();
-	rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};
+	/*rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};*/
 	
 	return rng;
 };
@@ -131,29 +165,31 @@ trad_line::trad_line(std::string ID, std::string text1, std::string text2) {
 
 int main()
 {
-    //Check if the folder traduction exist and create/update the file in it
+
+    // FIRST SETUP OPERATION
+    // Fill the languages unordered map 
+    
+    // Check if the folder traduction exist and create/update the file in it
     std::string folder = "traduction";
     if (!check_folder_exists(folder)) {
         create_folder(folder);
     }
 
-    //Go into the traduction folder
-    std::filesystem::current_path(folder);
+    ////Go into the traduction folder
+    //std::filesystem::current_path(folder);
 
-    //Create a new work traduction folder 
-    std::string workfolder = "group_traduction";
-    if (!check_folder_exists(workfolder)) {
-        create_folder(workfolder);
-    }
+    ////Create a new work traduction folder 
+    //std::string workfolder = "group_traduction";
+    //if (!check_folder_exists(workfolder)) {
+    //    create_folder(workfolder);
+    //}
 
-    std::filesystem::current_path(workfolder);
+    //std::filesystem::current_path(workfolder);
 
 
 
-    std::string name = "test.json";
-    // write prettified JSON to another file
-    std::ofstream o(name);
-    o << std::setw(4) << rng_data() << std::endl;
+
+    
 
 
 

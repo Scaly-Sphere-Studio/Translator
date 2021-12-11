@@ -11,7 +11,10 @@
 #include <SSS/commons.hpp>
 #include <nlohmann/json.hpp>
 
-
+struct ISO_CODES {
+	std::string code;
+	std::string name;
+};
 
 class Evaluation : public std::array<uint16_t, 5>
 {
@@ -50,7 +53,7 @@ public :
 
 struct User_data {
 	std::string user_ID;
-	std::array<unsigned int, 3> languages;
+	std::array<std::string, 3> languages;
 	Evaluation user_eval;
 	uint32_t trad_qty;
 };
@@ -61,7 +64,7 @@ public :
 	std::string text;
 	std::string comment;
 	uint32_t category = UINT32_MAX;
-	Evaluation text_eval;
+	/*Evaluation text_eval;*/
 	
 
 	//LOG AND OPERATOR OVERLOADS
@@ -81,7 +84,7 @@ public:
 	//DATA
 	std::string trad_ID;
 	std::string User_ID;
-	uint32_t language = 0;
+	std::string language;
 	uint16_t mother_file = 0;
 	float trad_evaluation = 0.0f;
 
@@ -125,3 +128,6 @@ void from_json(const nlohmann::json& j, Traduction_data& t);
 //Traduction infos
 void to_json(nlohmann::json& j, const Trad_info& t);
 void from_json(const nlohmann::json& j, Trad_info& t);
+//Iso codes
+void to_json(nlohmann::json& j, const ISO_CODES& t);
+void from_json(const nlohmann::json& j, ISO_CODES& t);

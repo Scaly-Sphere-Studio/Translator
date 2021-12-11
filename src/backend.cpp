@@ -90,12 +90,11 @@ void gen_info_traduction_file(const std::string& path)
 
 }
 
-void create_files(const std::string name, nlohmann::json& j)
+void create_files(const std::string name, Traduction_data &data)
 {
 
 	// write prettified JSON to another file
-	std::ofstream o(name);
-	o << std::setw(4) << j << std::endl;
+
 }
 
 
