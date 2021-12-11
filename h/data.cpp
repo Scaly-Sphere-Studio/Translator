@@ -73,12 +73,13 @@ void Traduction_data::parse_traduction_data_from_json(const std::string& path)
 	trad_evaluation = mean_evaluation();
 }
 
-void Traduction_data::push_text_data(std::string text, std::string comment, std::string ID)
+void Traduction_data::push_text_data(std::string text, std::string comment, std::string ID, uint32_t cat)
 {
 	Text_data t;
 	t.comment = comment;
 	t.text = text;
 	t.text_ID = ID;
+	t.category = cat;
 
 	text_data.emplace_back(t);
 }
@@ -92,14 +93,15 @@ void Traduction_data::remove_text_data(std::string ID)
 	}
 }
 
-
+//TEXT DATA PARSER
 void to_json(nlohmann::json& j, const Text_data& p)
 {
 	j = nlohmann::json{
 		{"id", p.text_ID},
 		{"text", p.text},
 		{"comment", p.comment},
-		{"evaluation", p.text_eval}
+		{"evaluation", p.text_eval},
+		{"category", p.category}
 	};
 }
 
@@ -110,9 +112,11 @@ void from_json(const nlohmann::json& j, Text_data& t)
 	j.at("comment").get_to(t.comment);
 	j.at("evaluation")
 		.get_to(static_cast<std::array<uint16_t, 5>&>(t.text_eval));
+	j.at("evaluation").get_to(t.category);
 
 }
 
+//TRADUCTION DATA PARSER
 void to_json(nlohmann::json& j, const Traduction_data& t)
 {
 	j = nlohmann::json{

@@ -17,7 +17,7 @@ std::string ID_trad_file_stringify(std::string userID, std::string time_stamp)
 	return userID + "_" + time_stamp;
 }
 
-bool check_folder_exists(std::string &path)
+bool check_folder_exists(const std::string &path)
 {	
 	std::string abs_path_str = absolute_path(path);
 
@@ -28,11 +28,11 @@ bool check_folder_exists(std::string &path)
 	}
 	else {
 		SSS::log_msg("[FILE] : \"" + abs_path_str + "\" folder doesn't exists");
-		return false;
 	}
+	return false;
 }
 
-void create_folder(std::string &path)
+void create_folder(const std::string &path)
 {
 	std::filesystem::create_directory(path);
 
@@ -40,7 +40,7 @@ void create_folder(std::string &path)
 }
 
 
-std::string absolute_path(std::string& path)
+std::string absolute_path(const std::string& path)
 {
 	std::string absolute_path;
 
@@ -88,6 +88,14 @@ void create_traduction_file(std::string& path, uint16_t language, Traduction_dat
 void gen_info_traduction_file(const std::string& path)
 {
 
+}
+
+void create_files(const std::string name, nlohmann::json& j)
+{
+
+	// write prettified JSON to another file
+	std::ofstream o(name);
+	o << std::setw(4) << j << std::endl;
 }
 
 

@@ -43,10 +43,12 @@ bool check_folder_exists(const std::string &path);
 //Create the folder using its future path
 void create_folder(const std::string &path);
 //Check if the path is absolute and convert it if necessary
-std::string absolute_path(std::string &path);
+std::string absolute_path(const std::string &path);
 //Create a new file to hold the traduction
 void create_traduction_file(const std::string& path, const uint16_t language, const Traduction_data& mother);
 void gen_info_traduction_file(const std::string& path);
+
+void create_files(const std::string name, Traduction_data& data);
 
 //////////////////
 /*BASE DE DONNEE*/

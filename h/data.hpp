@@ -60,6 +60,7 @@ public :
 	std::string text_ID;
 	std::string text;
 	std::string comment;
+	uint32_t category = UINT32_MAX;
 	Evaluation text_eval;
 	
 
@@ -83,6 +84,8 @@ public:
 	uint32_t language = 0;
 	uint16_t mother_file = 0;
 	float trad_evaluation = 0.0f;
+
+	
 	std::vector<Text_data> text_data;
 
 	//OPERATOR OVERLOAD
@@ -101,7 +104,7 @@ public:
 
 	void parse_traduction_data_to_json(const std::string& path, const bool prettify = false);
 	void parse_traduction_data_from_json(const std::string &path);
-	void push_text_data(std::string text, std::string comment, std::string ID);
+	void push_text_data(std::string text, std::string comment, std::string ID, uint32_t cat);
 	void remove_text_data(std::string ID);
 };
 
