@@ -152,18 +152,3 @@ void from_json(const nlohmann::json& j, Trad_info& t)
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
 	j.at("MOTHER_FILE").get_to(t.mother_language);
 }
- 
-void to_json(nlohmann::json& j, const ISO_CODES& t)
-{
-	j = nlohmann::json{
-	{"CODE", t.code},
-	{"FULLNAME", t.name},
-	};
-}
-
-
-void from_json(const nlohmann::json& j, ISO_CODES& t) 
-{
-	j.at("CODE").get_to(t.code);
-	j.at("FULLNAME").get_to(t.name);
-}

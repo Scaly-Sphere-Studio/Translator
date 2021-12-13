@@ -17,9 +17,6 @@ void read_from_text() {
     std::fstream f("bohemian.txt");
     std::string str;
 
-    
-
-
     std::vector<Text_data> rhapsody;
     while (std::getline(f, str)) {
         Text_data tmp;
@@ -187,12 +184,26 @@ int main()
     //std::filesystem::current_path(workfolder);
 
 
-
+    // Fill the iso map
 
     
+    std::ifstream fs("iso_map.json");
+    nlohmann::json j;
+    fs >> j;
 
+    std::unordered_map<std::string, std::string> iso_map;
+        
+    
+    iso_map = j.get<std::unordered_map<std::string, std::string>>();
 
+    std::cout << iso_map.size() << std::endl;
 
+    for (const std::pair<std::string, std::string>& n : iso_map) {
+        std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
+    }
+
+    //std::ofstream o("iso_map.json");
+    //o << std::setw(4) << j;
 
     return 0;
 }
