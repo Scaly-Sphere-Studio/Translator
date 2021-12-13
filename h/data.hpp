@@ -11,11 +11,6 @@
 #include <SSS/commons.hpp>
 #include <nlohmann/json.hpp>
 
-struct ISO_CODES {
-	std::string code;
-	std::string name;
-};
-
 class Evaluation : public std::array<uint16_t, 5>
 {
 public :
@@ -128,6 +123,3 @@ void from_json(const nlohmann::json& j, Traduction_data& t);
 //Traduction infos
 void to_json(nlohmann::json& j, const Trad_info& t);
 void from_json(const nlohmann::json& j, Trad_info& t);
-//Iso codes
-void to_json(nlohmann::json& j, const ISO_CODES& t);
-void from_json(const nlohmann::json& j, ISO_CODES& t);

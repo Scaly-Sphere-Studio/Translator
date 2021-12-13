@@ -164,8 +164,11 @@ int main()
 {
 
     // FIRST SETUP OPERATION
-    // Fill the languages unordered map 
-    
+    // Fill the languages ISO code map 
+    std::unordered_map<std::string, std::string> iso_map;
+    iso_map = retrieve_iso_codes("iso_codes/iso.json");
+
+
     // Check if the folder traduction exist and create/update the file in it
     std::string folder = "traduction";
     if (!check_folder_exists(folder)) {
@@ -184,26 +187,7 @@ int main()
     //std::filesystem::current_path(workfolder);
 
 
-    // Fill the iso map
 
-    
-    std::ifstream fs("iso_map.json");
-    nlohmann::json j;
-    fs >> j;
-
-    std::unordered_map<std::string, std::string> iso_map;
-        
-    
-    iso_map = j.get<std::unordered_map<std::string, std::string>>();
-
-    std::cout << iso_map.size() << std::endl;
-
-    for (const std::pair<std::string, std::string>& n : iso_map) {
-        std::cout << "Key:[" << n.first << "] Value:[" << n.second << "]\n";
-    }
-
-    //std::ofstream o("iso_map.json");
-    //o << std::setw(4) << j;
 
     return 0;
 }

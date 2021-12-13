@@ -97,6 +97,17 @@ void create_files(const std::string name, Traduction_data &data)
 
 }
 
+std::unordered_map<std::string, std::string> retrieve_iso_codes(const std::string path)
+{
+	// Open the file with the ISO codes map
+	std::ifstream fs(path);
+	// Parse the json
+	nlohmann::json j;
+	fs >> j;
+
+	return j.get<std::unordered_map<std::string, std::string>>();
+}
+
 
 void string_compare(const std::string& first, const std::string& second)
 {
