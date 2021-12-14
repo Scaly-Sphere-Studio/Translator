@@ -54,13 +54,12 @@ void Traduction_data::parse_traduction_data_to_json(const std::string& path, con
 	dst = *this;
 
 	std::ofstream ofs(path);
-	//if (prettify) {
-	//	ofs << std::setw(4) << dst << std::endl;
-	//}
-	//else {
-	//	ofs <<  dst << std::endl;
-	//}
-	
+	if (prettify) {
+		ofs << std::setw(4) << dst << std::endl;
+	}
+	else {
+		ofs <<  dst << std::endl;
+	}
 	ofs.close();
 }
 
@@ -125,7 +124,8 @@ void to_json(nlohmann::json& j, const Traduction_data& t)
 		{"DATA", t.text_data},
 		{"LANGUAGE", t.language},
 		{"TRADUCTION_ID", t.trad_ID},
-		{"MOTHER_FILE", t.mother_file},
+		{"MOTHER_FILE", t.magnitude},
+		{"CATEGORIES", t.categories}
 	};
 }
 
@@ -134,7 +134,8 @@ void from_json(const nlohmann::json& j, Traduction_data& t)
 	j.at("DATA").get_to(t.text_data);
 	j.at("LANGUAGE").get_to(t.language);
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
-	j.at("MOTHER_FILE").get_to(t.mother_file);
+	j.at("MOTHER_FILE").get_to(t.magnitude);
+	j.at("CATEGORIES").get_to(t.categories);
 }
 
 void to_json(nlohmann::json& j, const Trad_info& t)

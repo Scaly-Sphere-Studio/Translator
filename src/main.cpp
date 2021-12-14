@@ -45,24 +45,12 @@ void read_from_text() {
 
 };
 
-Text_data rng_data() {
-	Text_data rng;
-	rng.text_ID = time_stamp();
-	rng.text = time_stamp();
-	rng.comment = time_stamp();
-	/*rng.text_eval = std::array<uint16_t, 5> {0, 1, 2, 3, 4};*/
-	
-	return rng;
-};
-
 
 class trad_line {
     trad_line(std::string ID, std::string text1, std::string text2);
     const std::string _ID;
     std::string _text_trad1;
     std::string _text_trad2;
-
-
 };
 
 trad_line::trad_line(std::string ID, std::string text1, std::string text2) {
@@ -186,8 +174,11 @@ int main()
 
     //std::filesystem::current_path(workfolder);
 
-
-
+    Traduction_data td;
+    td.parse_traduction_data_from_json("test.json");
+    for (unsigned int i = 0; i < td.text_data.size(); i++) {
+        std::cout << td.text_data[i].text << std::endl;
+    }
 
     return 0;
 }

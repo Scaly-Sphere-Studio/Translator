@@ -26,6 +26,8 @@ catch (...) {
 	return "[SSS::toHex() error]";
 }
 
+
+
 //Create a hash value for the ID gen
 std::string time_stamp();
 //Create a string value to store ID for each traduction segment

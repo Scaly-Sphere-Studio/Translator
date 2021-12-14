@@ -74,23 +74,27 @@ class Traduction_data {
 private:
 	float mean_evaluation();
 public:
+	// ID is the reference used to track the Traduction and the user
+	// Language is the 3 number ISO code
+	// Magnitude represent the order to which the traduction has been passed
+	// Order 0 is the mother text, Order 1 is first traduction, more is a traduction of a traduction
+	// Evaluation of the traduction is the mean of all text data evaluations
 
 	void print();
 	//DATA
 	std::string trad_ID;
 	std::string User_ID;
 	std::string language;
-	uint16_t mother_file = 0;
+	uint16_t magnitude = 0;
 	float trad_evaluation = 0.0f;
-
-	
 	std::vector<Text_data> text_data;
+	std::map<int, std::string> categories;
 
 	//OPERATOR OVERLOAD
 	friend std::ostream& operator<<(std::ostream& output, const Traduction_data& trad) {
 		output << "[TRAD_ID]:" << trad.trad_ID <<
 			", [LANGUAGE]:" << trad.language;
-		if (trad.mother_file) {
+		if (trad.magnitude == 0) {
 			output << ", [MOTHER_FILE]" << std::endl;
 		}
 

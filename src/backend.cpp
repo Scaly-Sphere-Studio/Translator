@@ -57,17 +57,17 @@ std::string absolute_path(const std::string& path)
 
 void create_traduction_file(std::string& path, uint16_t language, Traduction_data& mother)
 {
-
+	//TODO ???
 	Traduction_data t;
 	t.language = language;
-	if (mother.mother_file == 1) {
+	if (mother.magnitude == 1) {
 		//text copied from the mother language file
-		t.mother_file = 0;
+		t.magnitude = 0;
 	}
 	else {
 		//text copied from another daughter file
 		//Warning during creation process, loss of information during this traduction
-		t.mother_file = 2;
+		t.magnitude = 2;
 	}
 
 	t.trad_ID = mother.trad_ID;
