@@ -4,13 +4,31 @@
 #include <string>
 
 
-//#include <SSS/GL.hpp>
-//#include <imgui.h>
-//#include "imgui_impl_glfw.h"
-//#include "imgui_impl_opengl3.h"
+#include <SSS/GL.hpp>
+#include <imgui.h>
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
-//#include "frontend.hpp"
+#include "frontend.hpp"
 #include "backend.hpp"
+
+struct GUI_Text {
+public:
+    Text_data save();
+    static char bfr[128];
+    Text_data text;
+};
+
+
+struct GUI_Category {
+public:
+    void show();
+    void export_cat();
+    std::string _name;
+    std::vector<GUI_Text> _tradline;
+};
+
+
 
 
 void read_from_text() {
@@ -54,7 +72,6 @@ class trad_line {
 };
 
 trad_line::trad_line(std::string ID, std::string text1, std::string text2) {
-
 
 };
 
@@ -174,11 +191,103 @@ int main()
 
     //std::filesystem::current_path(workfolder);
 
-    Traduction_data td;
-    td.parse_traduction_data_from_json("test.json");
-    for (unsigned int i = 0; i < td.text_data.size(); i++) {
-        std::cout << td.text_data[i].text << std::endl;
+    Traduction_data mt;
+    mt.parse_traduction_data_from_json("test.json");
+    for (unsigned int i = 0; i < mt.text_data.size(); i++) {
+        std::cout << mt.text_data[i].text << std::endl;
     }
+
+
+    //GENERATE THE CATEGORY MAP
+    std::map<uint32_t, GUI_Category> CAT;
+
+    
+    //  CREATE THE GUI CATEGORIES MAP
+    for (auto& m : mt.categories) {
+        GUI_Category cat;
+        cat._name = m.second;
+        CAT.insert(std::make_pair(m.first, cat));
+    }
+
+    // FILL EACH CATEGORY WITH IT'S TEXTS
+    for (auto& t : mt.text_data) {
+        GUI_Text _line;
+        _line.text = t;
+        CAT[t.category]._tradline.emplace_back(_line);
+    }
+
+
+
+
+    //SETUP THE TRANSLATED FILE
+    Traduction_data dt;
+    dt.magnitude = mt.magnitude + 1;
+    dt.trad_ID = mt.trad_ID;
+    dt.categories = mt.categories;
+    dt.language = "fra";
+
+    //Create a window
+  SSS::GL::Window::Args args;
+  args.title = "ImGUI example window";
+  args.w = 1280;
+  args.h = 720;
+  SSS::GL::Window::Shared window = SSS::GL::Window::create(args);
+  window->setVSYNC(true);
+
+  // Setup Dear ImGui window
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGui::GetIO().IniFilename = nullptr;
+
+  // Setup Platform/Renderer bindings
+  ImGui_ImplGlfw_InitForOpenGL(window->getGLFWwindow(), true);
+  ImGui_ImplOpenGL3_Init("#version 330");
+
+
+  std::string essai_buffer = "petit test entre ami";
+  // Main loop
+    while (!window->shouldClose()) {
+        // Set GLFW context
+        SSS::GL::Context const context(window);
+    
+        // Feed inputs to dear imgui, start new frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        
+        // Display demo
+        ImGui::Begin("First language", NULL ,ImGuiWindowFlags_NoMove);
+        ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+        ImGui::SetWindowSize(ImVec2(args.w, args.h), ImGuiCond_FirstUseEver);
+    
+       
+        //ImGui::Columns(3, "mycolumns"); // 3-ways, with border
+        if (ImGui::TreeNode("Category 1")) {
+            //for (unsigned int i = 0; i < 100; i++) {
+            //    text_line(SSS::toString(i), 
+            //        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            //        , essai_buffer);
+            //}
+            //
+            ImGui::Separator();
+            
+            /*ImGui::InputTextMultiline("##source", buffer, IM_ARRAYSIZE(buffer), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 1.3));*/
+            ImGui::TreePop();
+            
+        }
+    
+        ImGui::End();
+    
+        // Render dear imgui into screen
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        window->printFrame();
+    }
+
+  // Clean up ImGUI
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
 
     return 0;
 }
