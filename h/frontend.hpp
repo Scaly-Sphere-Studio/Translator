@@ -21,7 +21,7 @@ public:
 struct GUI_Category {
 public:
     void show();
-    void export_cat();
+    void export_cat(uint32_t cat_ID, Traduction_data& data);
     std::string _name;
     std::vector<GUI_Text> _tradline;
 };
