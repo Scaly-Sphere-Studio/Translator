@@ -52,7 +52,7 @@ void gen_info_traduction_file(const std::string& path);
 
 void create_files(const std::string name, Traduction_data& data);
 
-std::unordered_map<std::string, std::string> retrieve_iso_codes(const std::string path);
+std::map<std::string, std::string> retrieve_iso_codes(const std::string path);
 
 //////////////////
 /*BASE DE DONNEE*/
