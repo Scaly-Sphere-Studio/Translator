@@ -33,19 +33,23 @@ public :
     ~TRANSLATOR();
 
     void show();
-private : 
+private :
+    //BACKEND INFORMATIONS
     std::map<std::string, std::string> iso_map;
     std::vector<std::string> _translated;
     //Keep track of the first and second language iso code
     std::string _fl;
     std::string _sl;
+    //Informations about current project
+    Trad_info _ti;
+    Traduction_data _mt;
+
 
     //CONTEXT BEHAVIOR
     SSS::GL::Window::Shared _window;
     SSS::GL::Window::Args _args;
-    static void size_callback(GLFWwindow *ptr, int width, int height);
 
-    //GENERATE THE CATEGORY MAP
+    //CATEGORY MAP FOR THE GUI
     std::map<uint32_t, GUI_Category> CAT;
 
 
@@ -59,5 +63,6 @@ private :
     //INTERFACE
     void menu_bar();
     void language_selector();
+    std::string lang_ext_file_name(std::string &id, std::string &lang_iso_ext);
 
 };

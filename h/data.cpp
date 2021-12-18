@@ -1,5 +1,9 @@
 #include "data.hpp"
 
+
+/// 
+/// EVALUTION STRUCT FOR DATA AND USER COMPARISON
+/// 
 Evaluation::Evaluation()
 {
 	fill(0);
@@ -29,6 +33,27 @@ uint32_t  Evaluation::count() const
 	}
 
 	return count;
+}
+
+/// 
+/// MAIN TRADUCTION STRUCTURE MANAGER
+/// 
+
+Traduction_data::Traduction_data()
+{
+
+}
+
+
+Traduction_data::Traduction_data(std::string &path)
+{
+	parse_traduction_data_from_json(path);
+}
+
+Traduction_data::~Traduction_data()
+{
+	text_data.clear();
+	categories.clear();
 }
 
 float Traduction_data::mean_evaluation()
@@ -94,6 +119,26 @@ void Traduction_data::remove_text_data(std::string ID)
 	}
 }
 
+
+/// 
+/// TRADUCTION INFO
+/// 
+
+
+void Trad_info::parse_info_data_to_json(const std::string& path, const bool prettify)
+{
+}
+
+void Trad_info::parse_info_data_from_json(const std::string& path)
+{
+	std::ifstream ifs(path);
+	nlohmann::json tmp;
+	ifs >> tmp;
+	ifs.close();
+
+	*this = tmp;
+}
+
 //TEXT DATA PARSER
 void to_json(nlohmann::json& j, const Text_data& p)
 {
@@ -138,6 +183,7 @@ void from_json(const nlohmann::json& j, Traduction_data& t)
 	j.at("CATEGORIES").get_to(t.categories);
 }
 
+//TRADUCTION INFO PARSER
 void to_json(nlohmann::json& j, const Trad_info& t)
 {
 	j = nlohmann::json{
@@ -153,3 +199,5 @@ void from_json(const nlohmann::json& j, Trad_info& t)
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
 	j.at("MOTHER_FILE").get_to(t.mother_language);
 }
+
+

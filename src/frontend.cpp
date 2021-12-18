@@ -8,7 +8,7 @@ void GUI_Text::show()
     ImGui::TextWrapped(text.text.c_str());                          ImGui::NextColumn();
     
     //Create a non read input ID 
-    const std::string input_ID = "##" + text.comment;
+    const std::string input_ID = "##" + text.text_ID;
     ImGui::SetNextItemWidth(-1);
     ImGui::InputText(input_ID.c_str(), bfr, IM_ARRAYSIZE(bfr));     ImGui::NextColumn();
 
@@ -16,8 +16,7 @@ void GUI_Text::show()
         ImGui::Columns(1);
         ImGui::Bullet();
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.33f, 0.51f, 0.07f, 1.0f));
-        const std::string comment_ID = "##" + text.comment;
-        ImGui::TextWrapped(comment_ID.c_str());
+        ImGui::TextWrapped(text.comment.c_str());
         ImGui::PopStyleColor(1);
     }
 }
@@ -63,26 +62,13 @@ TRANSLATOR::TRANSLATOR()
     }
     iso_map = retrieve_iso_codes(iso_file);
 
-
+    //TODO check for the translator info and retrieve the last opened project
 
     // Check if the folder traduction exist and create/update the file in it
     std::string folder = "translation";
     if (!check_folder_exists(folder)) {
         create_folder(folder);
     }
-
-
-    ////Go into the traduction folder
-    //std::filesystem::current_path(folder);
-
-    ////Create a new work traduction folder 
-    //std::string workfolder = "group_traduction";
-    //if (!check_folder_exists(workfolder)) {
-    //    create_folder(workfolder);
-    //}
-
-    //std::filesystem::current_path(workfolder);
-
 
     //  Create a window
     _args.title = "SSS Translator";
@@ -158,7 +144,6 @@ void TRANSLATOR::show()
             c.second.show();
         }
 
-
         // Render dear imgui into screen
         ImGui::End();
         ImGui::Render();
@@ -166,22 +151,7 @@ void TRANSLATOR::show()
         _window->printFrame();
     }
 
-    //Save function
-    //  SETUP THE TRANSLATED FILE
-    Traduction_data dt;
-    dt.magnitude = mt.magnitude + 1;
-    dt.trad_ID = mt.trad_ID;
-    dt.categories = mt.categories;
-    dt.language = "fra";
-
-    //  EXPORT TRANSLATION INTO JSON FILE
-    for (std::pair<uint32_t, GUI_Category> c : CAT)
-    {
-        c.second.export_cat(c.first, dt);
-    }
-
-    nlohmann::json ej;
-    dt.parse_traduction_data_to_json("trad_fr.json", true);
+    save();
 
     // Clean up ImGUI
     ImGui_ImplOpenGL3_Shutdown();
@@ -192,6 +162,23 @@ void TRANSLATOR::show()
 
 void TRANSLATOR::save()
 {
+    //  SETUP THE TRANSLATED FILE
+    Traduction_data dt;
+    dt.magnitude = _mt.magnitude + 1;
+    dt.trad_ID = _mt.trad_ID;
+    dt.categories = _mt.categories;
+    dt.language = "fra";
+
+
+    //TODO CAT NAMES
+    for (std::pair<uint32_t, GUI_Category> c : CAT)
+    {
+        c.second.export_cat(c.first, dt);
+    }
+
+    //  EXPORT TRANSLATION INTO JSON FILE
+    nlohmann::json ej;
+    dt.parse_traduction_data_to_json("trad_fr.json", true);
 }
 
 void TRANSLATOR::load(std::string path)
@@ -210,7 +197,7 @@ void TRANSLATOR::menu_bar()
             if (ImGui::MenuItem("Save"))
             {
                 save();
-                std::cout << "saved";
+                std::cout << "saved\n";
             }
 
             ImGui::EndMenu();
@@ -229,12 +216,10 @@ void TRANSLATOR::language_selector()
     ImGui::Text("        Traduction :");
     int width = 150;
 
-    //static int item_current_idx = 0; // Here we store our selection data as an index.
     //initialize to the first item of the iso languages list
     static std::string item_current_idx = iso_map.begin()->first;
     //reviewed option
     const char* combo_preview_value = iso_map[item_current_idx].c_str();
-
 
     ImGui::SetNextItemWidth(width);
 
@@ -242,8 +227,7 @@ void TRANSLATOR::language_selector()
     if (ImGui::BeginCombo("##first_Language", combo_preview_value))
     {
 
-        //todo performance drop here
-        //Here need only the languages that have already been translated
+        //todo Here need only the languages that have already been translated
         for (auto& m : iso_map)
         {
             iterator = m.first;
@@ -291,4 +275,9 @@ void TRANSLATOR::language_selector()
 
         ImGui::EndCombo();
     }
+}
+
+std::string TRANSLATOR::lang_ext_file_name(std::string& id, std::string& lang_iso_ext)
+{
+    return std::string();
 }

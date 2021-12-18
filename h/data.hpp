@@ -71,15 +71,17 @@ public :
 };
 
 class Traduction_data {
-private:
-	float mean_evaluation();
 public:
+	Traduction_data();
+	Traduction_data(std::string &path);
+	~Traduction_data();
+
 	// ID is the reference used to track the Traduction and the user
 	// Language is the 3 number ISO code
 	// Magnitude represent the order to which the traduction has been passed
 	// Order 0 is the mother text, Order 1 is first traduction, more is a traduction of a traduction
 	// Evaluation of the traduction is the mean of all text data evaluations
-
+	float mean_evaluation();
 	void print();
 	//DATA
 	std::string trad_ID;
@@ -104,26 +106,36 @@ public:
 		return output;
 	}
 
+	//Parse the traduction data into a json file
 	void parse_traduction_data_to_json(const std::string& path, const bool prettify = false);
+	//Fill the Traduction data structure with the data from a given json
 	void parse_traduction_data_from_json(const std::string &path);
 	void push_text_data(std::string text, std::string comment, std::string ID, uint32_t cat);
 	void remove_text_data(std::string ID);
 };
 
 
-struct Trad_info {
+class Trad_info {
+public:
 	std::string trad_ID;
-	uint32_t mother_language;
-	std::vector<uint32_t> trad_languages;
+	std::string mother_language;
+	std::vector<std::string> trad_languages;
+
+	//Parse the traduction data into a json file
+	void parse_info_data_to_json(const std::string& path, const bool prettify = false);
+	//Fill the Traduction data structure with the data from a given json
+	void parse_info_data_from_json(const std::string& path);
 };
 
 //JSON CONVERTION
 //Text data convertion
 void to_json(nlohmann::json& j, const Text_data& t);
 void from_json(const nlohmann::json& j, Text_data& t);
+
 //Traduction data convertion
 void to_json(nlohmann::json& j, const Traduction_data& t);
 void from_json(const nlohmann::json& j, Traduction_data& t);
+
 //Traduction infos
 void to_json(nlohmann::json& j, const Trad_info& t);
 void from_json(const nlohmann::json& j, Trad_info& t);
