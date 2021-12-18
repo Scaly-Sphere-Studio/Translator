@@ -1,5 +1,18 @@
 {
-    "CATEGORIES": [],
+    "CATEGORIES": [
+        [
+            0,
+            "Categories"
+        ],
+        [
+            1,
+            "Interface"
+        ],
+        [
+            2,
+            "Bohemian Rhapsody"
+        ]
+    ],
     "DATA": [
         {
             "category": 2,
@@ -334,5 +347,5 @@
     ],
     "LANGUAGE": "fra",
     "MOTHER_FILE": 1,
-    "TRADUCTION_ID": ""
+    "TRADUCTION_ID": "9095e582835ac"
 }
