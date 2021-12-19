@@ -2,21 +2,17 @@
 
 void GUI_Text::show()
 {
+    ImGui::Columns(2);                                          ImGui::Separator();
+    ImGui::TextWrapped(mt_data.text.c_str());                   ImGui::NextColumn();
     
-    ImGui::Columns(2);
-    ImGui::Separator();
-    ImGui::TextWrapped(text.text.c_str());                          ImGui::NextColumn();
-    
-    //Create a non read input ID 
-    const std::string input_ID = "##" + text.text_ID;
     ImGui::SetNextItemWidth(-1);
-    ImGui::InputText(input_ID.c_str(), bfr, IM_ARRAYSIZE(bfr));     ImGui::NextColumn();
+    std::string TEXT_ID = "##" + mt_data.text_ID;
+    ImGui::InputText(TEXT_ID.c_str(), &txt);                    ImGui::NextColumn();
 
-    if (!text.comment.empty()) {
-        ImGui::Columns(1);
-        ImGui::Bullet();
+    if (!mt_data.comment.empty()) {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.33f, 0.51f, 0.07f, 1.0f));
-        ImGui::TextWrapped(text.comment.c_str());
+        ImGui::Columns(1);                                      ImGui::Bullet();
+        ImGui::TextWrapped(mt_data.comment.c_str());
         ImGui::PopStyleColor(1);
     }
 }
@@ -24,18 +20,18 @@ void GUI_Text::show()
 Text_data GUI_Text::save()
 {
     Text_data dst;
-    dst.text = bfr;
+    dst.text = txt;
     dst.category = INT32_MAX;
-    dst.comment = text.comment;
-    dst.text_ID = text.text_ID;
+    dst.comment = mt_data.comment;
+    dst.text_ID = mt_data.text_ID;
     return dst;
 }
 
 void GUI_Category::show()
 {
     if (ImGui::TreeNode(_name.c_str())) {
-        for (GUI_Text td : _tradline) {
-            td.show();
+        for (uint32_t i = 0; i < _tradline.size(); i++) {
+            _tradline[i].show();
         }
         
         ImGui::Separator();
@@ -88,22 +84,20 @@ void TRANSLATOR::show()
     //LOAD FUNCTION
     Traduction_data mt;
     mt.parse_traduction_data_from_json("test.json");
-    for (unsigned int i = 0; i < mt.text_data.size(); i++) {
-        /*std::cout << mt.text_data[i].text << std::endl;*/
-    }
 
     //  CREATE THE GUI CATEGORIES MAP
-    for (auto& m : mt.categories) {
+    for (std::pair<int, std::string> m : mt.categories) {
         GUI_Category cat;
         cat._name = m.second;
-        CAT.insert(std::make_pair(m.first, cat));
+        CATEGORIES.emplace_back(std::make_pair(m.first, cat));
     }
 
-    //  FILL EACH CATEGORY WITH ITS TEXTS
-    for (auto& t : mt.text_data) {
+    for (Text_data t : mt.text_data) {
         GUI_Text _line;
-        _line.text = t;
-        CAT[t.category]._tradline.emplace_back(_line);
+        _line.mt_data = t;
+        //TODO LOAD PREVIOUS TRADUCTION
+        /*_line.txt = t.text;*/
+        CATEGORIES[t.category].second._tradline.emplace_back(_line);
     }
 
     //  Setup Dear ImGui window
@@ -119,20 +113,24 @@ void TRANSLATOR::show()
     while (!_window->shouldClose()) {
         // Set GLFW context
         SSS::GL::Context const context(_window);
+
         // Feed inputs to dear imgui, start new frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+
+        //Create and update the ImGui Window with the context info
         //FLAGS
         ImGuiWindowFlags window_flags = 0;
-        window_flags |= ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoTitleBar;
         window_flags |= ImGuiWindowFlags_MenuBar;
+        window_flags |= ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoResize;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        window_flags |= ImGuiWindowFlags_NoDecoration;
 
         ImGui::Begin("First language", NULL, window_flags);
         ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-        //Update the window dimensions
         _window.get()->getDimensions(_args.w, _args.h);
         ImGui::SetWindowSize(ImVec2(_args.w, _args.h), ImGuiCond_Always);
 
@@ -140,8 +138,8 @@ void TRANSLATOR::show()
         menu_bar();
 
         //Display the categories
-        for (std::pair<uint32_t, GUI_Category> c : CAT) {
-            c.second.show();
+        for (uint32_t i = 0; i < CATEGORIES.size(); i++) {
+            CATEGORIES[i].second.show();
         }
 
         // Render dear imgui into screen
@@ -151,7 +149,7 @@ void TRANSLATOR::show()
         _window->printFrame();
     }
 
-    save();
+    /*save();*/
 
     // Clean up ImGUI
     ImGui_ImplOpenGL3_Shutdown();
@@ -171,7 +169,7 @@ void TRANSLATOR::save()
 
 
     //TODO CAT NAMES
-    for (std::pair<uint32_t, GUI_Category> c : CAT)
+    for (std::pair<uint32_t, GUI_Category> c : CATEGORIES)
     {
         c.second.export_cat(c.first, dt);
     }

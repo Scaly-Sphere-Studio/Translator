@@ -7,11 +7,21 @@
 #include <string>
 
 #include <SSS/Commons.hpp>
+#include <SSS/GL.hpp>
+#include <imgui.h>
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 
 
 ///////////////////////////////////////
 /* UUID - TEXT DATA & TRADUCTION DATA*/
 ///////////////////////////////////////
+
+namespace ImGui {
+	IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+}
+
 
 
 // Converts a value to a hex string by outputing it to a string stream

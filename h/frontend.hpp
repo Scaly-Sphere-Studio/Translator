@@ -3,28 +3,27 @@
 #include "backend.hpp"
 
 #include <string>
-#include <SSS/GL.hpp>
-#include <imgui.h>
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+
+
 
 
 struct GUI_Text {
 public:
+    std::string txt = "";
+    Text_data mt_data;
+
     void show();
     Text_data save();
-    char bfr[128] = "";
-    Text_data text;
-
 };
 
 
 struct GUI_Category {
 public:
-    void show();
-    void export_cat(uint32_t cat_ID, Traduction_data& data);
     std::string _name;
     std::vector<GUI_Text> _tradline;
+
+    void show();
+    void export_cat(uint32_t cat_ID, Traduction_data& data);
 };
 
 class TRANSLATOR {
@@ -43,6 +42,7 @@ private :
     //Informations about current project
     Trad_info _ti;
     Traduction_data _mt;
+    Traduction_data _dt;
 
 
     //CONTEXT BEHAVIOR
@@ -50,7 +50,7 @@ private :
     SSS::GL::Window::Args _args;
 
     //CATEGORY MAP FOR THE GUI
-    std::map<uint32_t, GUI_Category> CAT;
+    std::vector<std::pair<uint32_t, GUI_Category>> CATEGORIES;
 
 
     //File and project management
