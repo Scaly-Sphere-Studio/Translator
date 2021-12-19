@@ -86,17 +86,21 @@ TRANSLATOR::~TRANSLATOR()
 void TRANSLATOR::show()
 {
     //LOAD FUNCTION
-    _mt.parse_traduction_data_from_json("test.json");
+    Traduction_data mt;
+    mt.parse_traduction_data_from_json("test.json");
+    for (unsigned int i = 0; i < mt.text_data.size(); i++) {
+        /*std::cout << mt.text_data[i].text << std::endl;*/
+    }
 
     //  CREATE THE GUI CATEGORIES MAP
-    for (auto& m : _mt.categories) {
+    for (auto& m : mt.categories) {
         GUI_Category cat;
         cat._name = m.second;
         CAT.insert(std::make_pair(m.first, cat));
     }
 
     //  FILL EACH CATEGORY WITH ITS TEXTS
-    for (auto& t : _mt.text_data) {
+    for (auto& t : mt.text_data) {
         GUI_Text _line;
         _line.text = t;
         CAT[t.category]._tradline.emplace_back(_line);
@@ -125,8 +129,6 @@ void TRANSLATOR::show()
         window_flags |= ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         window_flags |= ImGuiWindowFlags_MenuBar;
-        window_flags |= ImGuiWindowFlags_NoResize;
-        window_flags |= ImGuiWindowFlags_NoDecoration;
 
         ImGui::Begin("First language", NULL, window_flags);
         ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
@@ -198,14 +200,6 @@ void TRANSLATOR::menu_bar()
                 std::cout << "saved\n";
             }
 
-            //SAVE CURRENT PROGRESSION
-            if (ImGui::MenuItem("Load"))
-            {
-                load("trad_fr.json");
-
-                std::cout << "loaded\n";
-            }
-
             ImGui::EndMenu();
         }
 
@@ -234,15 +228,13 @@ void TRANSLATOR::language_selector()
     {
 
         //todo Here need only the languages that have already been translated
-        for (auto& m : _ti.trad_languages)
+        for (auto& m : iso_map)
         {
-            iterator = m;
+            iterator = m.first;
 
             const bool is_selected = (item_current_idx == iterator);
-            if (ImGui::Selectable(m.c_str(), is_selected))
-            {
+            if (ImGui::Selectable(m.second.c_str(), is_selected))
                 item_current_idx = iterator;
-            }
 
             if (is_selected) {
                 ImGui::SetItemDefaultFocus();
