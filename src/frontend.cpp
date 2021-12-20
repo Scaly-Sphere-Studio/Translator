@@ -223,9 +223,9 @@ void TRANSLATOR::language_selector()
     int width = 150;
 
     //initialize to the first item of the iso languages list
-    static std::string item_current_idx = iso_map.begin()->first;
+    static std::string item_current_idx = _ti.mother_language;
     //reviewed option
-    const char* combo_preview_value = iso_map[item_current_idx].c_str();
+    const char* combo_preview_value = _ti.trad_languages[item_current_idx].c_str();
 
     ImGui::SetNextItemWidth(width);
 
@@ -234,7 +234,7 @@ void TRANSLATOR::language_selector()
     {
 
         //todo Here need only the languages that have already been translated
-        for (auto& m : iso_map)
+        for (auto& m : _ti.trad_languages)
         {
             iterator = m.first;
 
@@ -244,6 +244,7 @@ void TRANSLATOR::language_selector()
 
             if (is_selected) {
                 ImGui::SetItemDefaultFocus();
+                // TODO LOAD THE SPECIFIC FILE
             }
 
         }
@@ -259,7 +260,7 @@ void TRANSLATOR::language_selector()
     ImGui::SetNextItemWidth(width);
 
 
-    static std::string iterator_sl = "";
+    iterator = "";
 
     if (ImGui::BeginCombo("##second_language", combo_preview_value_sl))
     {
@@ -268,11 +269,11 @@ void TRANSLATOR::language_selector()
 
         for (auto& m : iso_map)
         {
-            iterator_sl = m.first;
+            iterator = m.first;
 
-            const bool is_selected = (item_current_idx_sl == iterator_sl);
+            const bool is_selected = (item_current_idx_sl == iterator);
             if (ImGui::Selectable(m.second.c_str(), is_selected))
-                item_current_idx_sl = iterator_sl;
+                item_current_idx_sl = iterator;
 
             if (is_selected) {
                 ImGui::SetItemDefaultFocus();
