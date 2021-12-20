@@ -119,7 +119,8 @@ class Trad_info {
 public:
 	std::string trad_ID;
 	std::string mother_language;
-	std::vector<std::string> trad_languages;
+	//Need to save it as a map, because the json lib is bugged with string vectors
+	std::map<std::string, std::string> trad_languages;
 
 	//Parse the traduction data into a json file
 	void parse_info_data_to_json(const std::string& path, const bool prettify = false);

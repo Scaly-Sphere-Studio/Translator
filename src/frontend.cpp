@@ -21,7 +21,7 @@ Text_data GUI_Text::save()
 {
     Text_data dst;
     dst.text = txt;
-    dst.category = INT32_MAX;
+    dst.category = mt_data.category;
     dst.comment = mt_data.comment;
     dst.text_ID = mt_data.text_ID;
     return dst;
@@ -54,9 +54,9 @@ TRANSLATOR::TRANSLATOR()
     // Fill the languages ISO code map 
     std::string iso_file = "iso_codes/iso.json";
     if (check_folder_exists(iso_file)) {
-        std::cout << "le fichier iso existe" << std::endl;
+        iso_map = retrieve_iso_codes(iso_file);
+        SSS::log_msg("ISO File found");
     }
-    iso_map = retrieve_iso_codes(iso_file);
 
     //TODO check for the translator info and retrieve the last opened project
 
@@ -73,6 +73,14 @@ TRANSLATOR::TRANSLATOR()
     _window = SSS::GL::Window::create(_args);
     _window->setVSYNC(true);
 
+    //_ti.mother_language = "eng";
+    //_ti.trad_ID = "bohemian";
+    //_ti.trad_languages.insert(std::make_pair("eng", "English"));
+    //_ti.trad_languages.insert(std::make_pair("fra", "Français"));
+    //_ti.trad_languages.insert(std::make_pair("ita", "Italien"));
+
+    _ti.parse_info_data_from_json("translation/bohemian/bohemian.ini");
+    SSS::log_msg("TRADUCTION INI File loaded");
 }
 
 TRANSLATOR::~TRANSLATOR()

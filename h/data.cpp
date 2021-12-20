@@ -127,6 +127,17 @@ void Traduction_data::remove_text_data(std::string ID)
 
 void Trad_info::parse_info_data_to_json(const std::string& path, const bool prettify)
 {
+	nlohmann::json dst;
+	dst = *this;
+
+	std::ofstream ofs(path);
+	if (prettify) {
+		ofs << std::setw(4) << dst << std::endl;
+	}
+	else {
+		ofs << dst << std::endl;
+	}
+	ofs.close();
 }
 
 void Trad_info::parse_info_data_from_json(const std::string& path)
@@ -197,7 +208,7 @@ void from_json(const nlohmann::json& j, Trad_info& t)
 {
 	j.at("TRAD_LANGUAGES").get_to(t.trad_languages);
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
-	j.at("MOTHER_FILE").get_to(t.mother_language);
+	j.at("MOTHER_LANGUAGE").get_to(t.mother_language);
 }
 
 
