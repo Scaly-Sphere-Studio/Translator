@@ -57,7 +57,7 @@ private :
     std::string _translation_folder_path = "translation";
     std::string _project_name = "bohemian";
     void save();
-    void load(std::string path);
+    void load();
     
 
     //INTERFACE

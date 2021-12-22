@@ -41,6 +41,9 @@ void GUI_Category::show()
 
 void GUI_Category::export_cat(uint32_t cat_ID, Traduction_data& data)
 {
+    //Rewrite completly the text data
+    data.text_data.clear();
+
     for (GUI_Text tl : _tradline) {
         Text_data txt = tl.save();
         txt.category = cat_ID;
@@ -60,7 +63,7 @@ TRANSLATOR::TRANSLATOR()
 
     //TODO check for the translator info and retrieve the last opened project
 
-    // Check if the folder traduction exist and create/update the file in it
+    // Check if the folder translation exist and create/update the file in it
     std::string folder = "translation";
     if (!check_folder_exists(folder)) {
         create_folder(folder);
@@ -73,18 +76,9 @@ TRANSLATOR::TRANSLATOR()
     _window = SSS::GL::Window::create(_args);
     _window->setVSYNC(true);
 
-    //_ti.mother_language = "eng";
-    //_ti.trad_ID = "bohemian";
-    //_ti.trad_languages.insert(std::make_pair("eng", 0));
-    //_ti.trad_languages.insert(std::make_pair("fra", 1));
-    //_ti.trad_languages.insert(std::make_pair("ita", 1));
-    //_ti.fl = "eng";
-    //_ti.sl = "fra";
-    
-    
     //_ti.parse_info_data_to_json("translation/bohemian/bohemian.ini", true);
     _ti.parse_info_data_from_json("translation/bohemian/bohemian.ini");
-    SSS::log_msg("TRADUCTION INI File loaded");
+    SSS::log_msg("TRANSLATION INI File loaded");
 
     //Load the first and second language
     _fl = _ti.fl;
@@ -100,36 +94,8 @@ TRANSLATOR::~TRANSLATOR()
 
 void TRANSLATOR::show()
 {
-    //LOAD FUNCTION
-    _mt.parse_traduction_data_from_json(lang_file_name(_fl));
-
-    bool previous_translation = check_folder_exists(lang_file_name(_sl));
-    if (previous_translation) {
-        _dt.parse_traduction_data_from_json(lang_file_name(_sl));
-    }
-
-    //  CREATE THE GUI CATEGORIES MAP
-    for (std::pair<int, std::string> m : _mt.categories) {
-        GUI_Category cat;
-        cat._name = m.second;
-        CATEGORIES.emplace_back(std::make_pair(m.first, cat));
-    }
-
-    for (uint32_t i = 0; i < _mt.text_data.size(); i++) {
-        GUI_Text _line;
-        _line.mt_data = _mt.text_data[i];
-        
-        if (previous_translation) {
-            //If a previous translation is found for the second language
-            //Preload all the text from the second language file
-            if (!_dt.text_data[i].text.empty()) {
-                //Check if the text is empty
-                _line.txt = _dt.text_data[i].text;
-            } 
-        }
-        //Add the text to its specified category
-        CATEGORIES[_mt.text_data[i].category].second._tradline.emplace_back(_line);
-    }
+    //Load both languages from the last opened one in the ini file
+    load();
 
     //  Setup Dear ImGui window
     IMGUI_CHECKVERSION();
@@ -213,8 +179,40 @@ void TRANSLATOR::save()
 
 }
 
-void TRANSLATOR::load(std::string path)
+void TRANSLATOR::load()
 {
+    // LOAD FUNCTION
+    _mt.parse_traduction_data_from_json(lang_file_name(_fl));
+
+    //Check for a previous translation in the selected second language
+    bool previous_translation = check_folder_exists(lang_file_name(_sl));
+    if (previous_translation) {
+        _dt.parse_traduction_data_from_json(lang_file_name(_sl));
+    }
+
+    //  CREATE THE GUI CATEGORIES MAP
+    for (std::pair<int, std::string> m : _mt.categories) {
+        GUI_Category cat;
+        cat._name = m.second;
+        CATEGORIES.emplace_back(std::make_pair(m.first, cat));
+    }
+
+    for (uint32_t i = 0; i < _mt.text_data.size(); i++) {
+        GUI_Text _line;
+        _line.mt_data = _mt.text_data[i];
+
+        if (previous_translation) {
+            //If a previous translation is found for the second language
+            //Preload all the text from the second language file
+            if (!_dt.text_data[i].text.empty()) {
+                //Check if the text is empty
+                _line.txt = _dt.text_data[i].text;
+
+            }
+        }
+        //Add the text to its specified category
+        CATEGORIES[_mt.text_data[i].category].second._tradline.emplace_back(_line);
+    }
 }
 
 void TRANSLATOR::menu_bar()
@@ -244,7 +242,7 @@ void TRANSLATOR::menu_bar()
 
 void TRANSLATOR::language_selector()
 {
-    ImGui::Text("        Traduction :");
+    ImGui::Text("        Translation :");
     int width = 150;
     ImGui::SetNextItemWidth(width);
 
@@ -301,11 +299,14 @@ void TRANSLATOR::language_selector()
                 _sl = item_current_idx_sl;
                 ImGui::SetItemDefaultFocus();
 
-                //Check if there is already a traduction for this language
+                //Check if there is already a translation for this language
                 if (check_folder_exists(lang_file_name(_sl)))
                 {
                     //If a file is found, load the file for the second language
-                    //TODO LOAD THE FILE
+                    load();
+                }
+                else {
+                    //TODO Create a blank file for the new translation
                 }
 
             }
@@ -322,8 +323,6 @@ std::string TRANSLATOR::project_path()
 
     return file_path;
 }
-
-
 
 std::string TRANSLATOR::lang_file_name(std::string &lang)
 {
