@@ -75,37 +75,60 @@ TRANSLATOR::TRANSLATOR()
 
     //_ti.mother_language = "eng";
     //_ti.trad_ID = "bohemian";
-    //_ti.trad_languages.insert(std::make_pair("eng", "English"));
-    //_ti.trad_languages.insert(std::make_pair("fra", "Français"));
-    //_ti.trad_languages.insert(std::make_pair("ita", "Italien"));
-
+    //_ti.trad_languages.insert(std::make_pair("eng", 0));
+    //_ti.trad_languages.insert(std::make_pair("fra", 1));
+    //_ti.trad_languages.insert(std::make_pair("ita", 1));
+    //_ti.fl = "eng";
+    //_ti.sl = "fra";
+    
+    
+    //_ti.parse_info_data_to_json("translation/bohemian/bohemian.ini", true);
     _ti.parse_info_data_from_json("translation/bohemian/bohemian.ini");
     SSS::log_msg("TRADUCTION INI File loaded");
+
+    //Load the first and second language
+    _fl = _ti.fl;
+    _sl = _ti.sl;
 }
 
 TRANSLATOR::~TRANSLATOR()
 {
+    iso_map.clear();
+    _translated.clear();
+    CATEGORIES.clear();
 }
 
 void TRANSLATOR::show()
 {
     //LOAD FUNCTION
-    Traduction_data mt;
-    mt.parse_traduction_data_from_json("test.json");
+    _mt.parse_traduction_data_from_json(lang_file_name(_fl));
+
+    bool previous_translation = check_folder_exists(lang_file_name(_sl));
+    if (previous_translation) {
+        _dt.parse_traduction_data_from_json(lang_file_name(_sl));
+    }
 
     //  CREATE THE GUI CATEGORIES MAP
-    for (std::pair<int, std::string> m : mt.categories) {
+    for (std::pair<int, std::string> m : _mt.categories) {
         GUI_Category cat;
         cat._name = m.second;
         CATEGORIES.emplace_back(std::make_pair(m.first, cat));
     }
 
-    for (Text_data t : mt.text_data) {
+    for (uint32_t i = 0; i < _mt.text_data.size(); i++) {
         GUI_Text _line;
-        _line.mt_data = t;
-        //TODO LOAD PREVIOUS TRADUCTION
-        /*_line.txt = t.text;*/
-        CATEGORIES[t.category].second._tradline.emplace_back(_line);
+        _line.mt_data = _mt.text_data[i];
+        
+        if (previous_translation) {
+            //If a previous translation is found for the second language
+            //Preload all the text from the second language file
+            if (!_dt.text_data[i].text.empty()) {
+                //Check if the text is empty
+                _line.txt = _dt.text_data[i].text;
+            } 
+        }
+        //Add the text to its specified category
+        CATEGORIES[_mt.text_data[i].category].second._tradline.emplace_back(_line);
     }
 
     //  Setup Dear ImGui window
@@ -157,7 +180,7 @@ void TRANSLATOR::show()
         _window->printFrame();
     }
 
-    /*save();*/
+    save();
 
     // Clean up ImGUI
     ImGui_ImplOpenGL3_Shutdown();
@@ -169,22 +192,25 @@ void TRANSLATOR::show()
 void TRANSLATOR::save()
 {
     //  SETUP THE TRANSLATED FILE
-    Traduction_data dt;
-    dt.magnitude = _mt.magnitude + 1;
-    dt.trad_ID = _mt.trad_ID;
-    dt.categories = _mt.categories;
-    dt.language = "fra";
-
+    _dt.magnitude = _mt.magnitude + 1;
+    _dt.trad_ID = _mt.trad_ID;
+    _dt.categories = _mt.categories;
+    _dt.language = _sl;
 
     //TODO CAT NAMES
     for (std::pair<uint32_t, GUI_Category> c : CATEGORIES)
     {
-        c.second.export_cat(c.first, dt);
+        c.second.export_cat(c.first, _dt);
     }
 
     //  EXPORT TRANSLATION INTO JSON FILE
     nlohmann::json ej;
-    dt.parse_traduction_data_to_json("trad_fr.json", true);
+    _dt.parse_traduction_data_to_json(lang_file_name(_sl), true);
+
+    std::cout << _dt.categories[0];
+    std::cout << _dt.trad_ID;
+    std::cout << _dt.language;
+
 }
 
 void TRANSLATOR::load(std::string path)
@@ -209,7 +235,6 @@ void TRANSLATOR::menu_bar()
             ImGui::EndMenu();
         }
 
-
         language_selector();
 
 
@@ -221,32 +246,30 @@ void TRANSLATOR::language_selector()
 {
     ImGui::Text("        Traduction :");
     int width = 150;
+    ImGui::SetNextItemWidth(width);
 
     //initialize to the first item of the iso languages list
     static std::string item_current_idx = _ti.mother_language;
-    //reviewed option
-    const char* combo_preview_value = _ti.trad_languages[item_current_idx].c_str();
-
-    ImGui::SetNextItemWidth(width);
-
+    //reviewed option for the first slider
+    const char* combo_preview_value = iso_map[item_current_idx].c_str();
     static std::string iterator = "";
+
     if (ImGui::BeginCombo("##first_Language", combo_preview_value))
     {
-
-        //todo Here need only the languages that have already been translated
         for (auto& m : _ti.trad_languages)
         {
             iterator = m.first;
-
             const bool is_selected = (item_current_idx == iterator);
-            if (ImGui::Selectable(m.second.c_str(), is_selected))
+            
+            if (ImGui::Selectable(iso_map[m.first].c_str(), is_selected))
+            {
                 item_current_idx = iterator;
+            }
 
             if (is_selected) {
                 ImGui::SetItemDefaultFocus();
-                // TODO LOAD THE SPECIFIC FILE
+                //TODO LOAD THE SPECIFIC FILE
             }
-
         }
 
         ImGui::EndCombo();
@@ -255,28 +278,36 @@ void TRANSLATOR::language_selector()
     ImGui::Text(" TO ");
     ImGui::SetNextItemWidth(width);
 
-    static std::string item_current_idx_sl = iso_map.begin()->first;
-    const char* combo_preview_value_sl = iso_map[item_current_idx_sl].c_str();  // Pass in the preview value visible before opening the combo (it could be anything)
+    static std::string item_current_idx_sl = _sl;
+    //reviewed option for the second slider
+    const char* combo_preview_value_sl = iso_map[item_current_idx_sl].c_str(); 
     ImGui::SetNextItemWidth(width);
 
 
     iterator = "";
-
     if (ImGui::BeginCombo("##second_language", combo_preview_value_sl))
     {
-        //todo performance drop here 
-        //Here is the need for the cover of the whole iso map to chose a language to translate
-
         for (auto& m : iso_map)
         {
             iterator = m.first;
-
             const bool is_selected = (item_current_idx_sl == iterator);
-            if (ImGui::Selectable(m.second.c_str(), is_selected))
+
+            if (ImGui::Selectable(m.second.c_str(), is_selected)) {
                 item_current_idx_sl = iterator;
+            }
 
             if (is_selected) {
+                //Modify the current shown second language
+                _sl = item_current_idx_sl;
                 ImGui::SetItemDefaultFocus();
+
+                //Check if there is already a traduction for this language
+                if (check_folder_exists(lang_file_name(_sl)))
+                {
+                    //If a file is found, load the file for the second language
+                    //TODO LOAD THE FILE
+                }
+
             }
         }
 
@@ -284,7 +315,22 @@ void TRANSLATOR::language_selector()
     }
 }
 
-std::string TRANSLATOR::lang_ext_file_name(std::string& id, std::string& lang_iso_ext)
+std::string TRANSLATOR::project_path()
 {
-    return std::string();
+    std::string file_path = _translation_folder_path;
+    file_path += "/" + _project_name;
+
+    return file_path;
+}
+
+
+
+std::string TRANSLATOR::lang_file_name(std::string &lang)
+{
+    std::string ext = project_path();
+    ext += "/" + _project_name + "_" ;
+    ext += lang;
+    ext += ".json";
+
+    return ext;
 }

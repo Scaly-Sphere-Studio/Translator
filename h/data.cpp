@@ -200,7 +200,9 @@ void to_json(nlohmann::json& j, const Trad_info& t)
 	j = nlohmann::json{
 		{"MOTHER_LANGUAGE", t.mother_language},
 		{"TRAD_LANGUAGES", t.trad_languages},
-		{"TRADUCTION_ID", t.trad_ID}
+		{"TRADUCTION_ID", t.trad_ID},
+		{"FIRST_LANGUAGE", t.fl},
+		{"SECOND_LANGUAGE", t.sl},
 	};
 }
 
@@ -209,6 +211,9 @@ void from_json(const nlohmann::json& j, Trad_info& t)
 	j.at("TRAD_LANGUAGES").get_to(t.trad_languages);
 	j.at("TRADUCTION_ID").get_to(t.trad_ID);
 	j.at("MOTHER_LANGUAGE").get_to(t.mother_language);
+	j.at("FIRST_LANGUAGE").get_to(t.fl);
+	j.at("SECOND_LANGUAGE").get_to(t.sl);
+
 }
 
 

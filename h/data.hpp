@@ -120,7 +120,10 @@ public:
 	std::string trad_ID;
 	std::string mother_language;
 	//Need to save it as a map, because the json lib is bugged with string vectors
-	std::map<std::string, std::string> trad_languages;
+	//Stock the language shortcut and its traduction order
+	std::map<std::string, uint32_t> trad_languages;
+	std::string fl;
+	std::string sl;
 
 	//Parse the traduction data into a json file
 	void parse_info_data_to_json(const std::string& path, const bool prettify = false);

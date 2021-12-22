@@ -55,7 +55,7 @@ private :
 
     //File and project management
     std::string _translation_folder_path = "translation";
-    std::string _project_name = "";
+    std::string _project_name = "bohemian";
     void save();
     void load(std::string path);
     
@@ -63,6 +63,6 @@ private :
     //INTERFACE
     void menu_bar();
     void language_selector();
-    std::string lang_ext_file_name(std::string &id, std::string &lang_iso_ext);
-
+    std::string project_path();
+    std::string lang_file_name(std::string &lang);
 };
