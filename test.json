@@ -1,4 +1,19 @@
-[
+{
+    "CATEGORIES": [
+        [
+            0,
+            "Categories"
+        ],
+        [
+            1,
+            "Interface"
+        ],
+        [
+            2,
+            "Bohemian Rhapsody"
+        ]
+    ],
+    "DATA": [
     {
         "category": 2,
         "comment": "",
@@ -329,4 +344,8 @@
         "id": "86bfd78eb794c",
         "text": "Any way the wind blows..."
     }
-]
+],
+    "LANGUAGE": "eng",
+    "MOTHER_FILE": 0,
+    "TRADUCTION_ID": "9095e582835ac"
+}

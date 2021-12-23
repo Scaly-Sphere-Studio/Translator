@@ -83,6 +83,8 @@ TRANSLATOR::TRANSLATOR()
     //Load the first and second language
     _fl = _ti.fl;
     _sl = _ti.sl;
+
+    start = std::chrono::steady_clock::now();
 }
 
 TRANSLATOR::~TRANSLATOR()
@@ -110,12 +112,10 @@ void TRANSLATOR::show()
     while (!_window->shouldClose()) {
         // Set GLFW context
         SSS::GL::Context const context(_window);
-
         // Feed inputs to dear imgui, start new frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
 
         //Create and update the ImGui Window with the context info
         //FLAGS
@@ -139,6 +139,8 @@ void TRANSLATOR::show()
             CATEGORIES[i].second.show();
         }
 
+        autosave();
+
         // Render dear imgui into screen
         ImGui::End();
         ImGui::Render();
@@ -146,7 +148,7 @@ void TRANSLATOR::show()
         _window->printFrame();
     }
 
-    save();
+    save(lang_file_name(_sl));
 
     // Clean up ImGUI
     ImGui_ImplOpenGL3_Shutdown();
@@ -155,7 +157,7 @@ void TRANSLATOR::show()
 }
 
 
-void TRANSLATOR::save()
+void TRANSLATOR::save(std::string path)
 {
     //  SETUP THE TRANSLATED FILE
     _dt.magnitude = _mt.magnitude + 1;
@@ -169,14 +171,13 @@ void TRANSLATOR::save()
         c.second.export_cat(c.first, _dt);
     }
 
-    //  EXPORT TRANSLATION INTO JSON FILE
+    //EXPORT TRANSLATION INTO JSON FILE
     nlohmann::json ej;
-    _dt.parse_traduction_data_to_json(lang_file_name(_sl), true);
+    _dt.parse_traduction_data_to_json(path, true);
 
-    std::cout << _dt.categories[0];
-    std::cout << _dt.trad_ID;
-    std::cout << _dt.language;
-
+    //UPDATE THE INI FILE
+    std::string path_ini_file = project_path() + "/" + _project_name + ".ini";
+    _ti.parse_info_data_to_json(path_ini_file, true);
 }
 
 void TRANSLATOR::load()
@@ -191,6 +192,8 @@ void TRANSLATOR::load()
     }
 
     //  CREATE THE GUI CATEGORIES MAP
+    CATEGORIES.clear();
+
     for (std::pair<int, std::string> m : _mt.categories) {
         GUI_Category cat;
         cat._name = m.second;
@@ -207,12 +210,60 @@ void TRANSLATOR::load()
             if (!_dt.text_data[i].text.empty()) {
                 //Check if the text is empty
                 _line.txt = _dt.text_data[i].text;
-
             }
         }
         //Add the text to its specified category
         CATEGORIES[_mt.text_data[i].category].second._tradline.emplace_back(_line);
     }
+}
+
+void TRANSLATOR::autosave()
+{
+    using namespace std::chrono_literals;
+
+    end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_minutes = end - start;
+
+    if (elapsed_minutes > 10min) {
+        //Reset the counter
+        start = end;
+        
+        //Save the file in the autosave folder in the project folder
+        std::string autosave_file = project_path() + "/autosave";
+
+        if (!check_folder_exists(autosave_file)) {
+            //Check if the autosave folder exists and create it if not
+            create_folder(autosave_file);
+        }
+
+        autosave_file += "/" + _project_name + "_auto.json";
+        save(autosave_file);
+    }
+
+}
+
+void TRANSLATOR::create_new_file_trad(std::string path)
+{
+    //  SETUP THE TRANSLATED FILE
+    Traduction_data t_tmp;
+    t_tmp.magnitude = _mt.magnitude + 1;
+    t_tmp.trad_ID = _mt.trad_ID;
+    t_tmp.categories = _mt.categories;
+    t_tmp.language = _sl;
+
+    //TODO CAT NAMES
+    for (auto& m : _mt.text_data)
+    {
+        Text_data tmp;
+        tmp.category = m.category;
+        tmp.comment = m.comment;
+        tmp.text_ID = m.text_ID;
+        t_tmp.text_data.emplace_back(tmp);
+    }
+
+    //  EXPORT TRANSLATION INTO JSON FILE
+    nlohmann::json ej;
+    t_tmp.parse_traduction_data_to_json(path, true);
 }
 
 void TRANSLATOR::menu_bar()
@@ -226,8 +277,8 @@ void TRANSLATOR::menu_bar()
             //SAVE CURRENT PROGRESSION
             if (ImGui::MenuItem("Save"))
             {
-                save();
-                std::cout << "saved\n";
+                save(lang_file_name(_sl));
+                SSS::log_msg("FILE SAVED");
             }
 
             ImGui::EndMenu();
@@ -262,6 +313,8 @@ void TRANSLATOR::language_selector()
             if (ImGui::Selectable(iso_map[m.first].c_str(), is_selected))
             {
                 item_current_idx = iterator;
+                _fl = item_current_idx;
+                load();
             }
 
             if (is_selected) {
@@ -292,13 +345,7 @@ void TRANSLATOR::language_selector()
 
             if (ImGui::Selectable(m.second.c_str(), is_selected)) {
                 item_current_idx_sl = iterator;
-            }
-
-            if (is_selected) {
-                //Modify the current shown second language
                 _sl = item_current_idx_sl;
-                ImGui::SetItemDefaultFocus();
-
                 //Check if there is already a translation for this language
                 if (check_folder_exists(lang_file_name(_sl)))
                 {
@@ -307,8 +354,15 @@ void TRANSLATOR::language_selector()
                 }
                 else {
                     //TODO Create a blank file for the new translation
+                    create_new_file_trad(lang_file_name(_sl));
+                    load();
+                    _ti.trad_languages.insert(std::make_pair(_sl, _dt.magnitude));
                 }
+            }
 
+            if (is_selected) {
+                //Modify the current shown second language
+                ImGui::SetItemDefaultFocus();
             }
         }
 
@@ -333,3 +387,4 @@ std::string TRANSLATOR::lang_file_name(std::string &lang)
 
     return ext;
 }
+

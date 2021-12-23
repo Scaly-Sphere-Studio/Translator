@@ -45,7 +45,7 @@ std::string time_stamp();
 std::string ID_text_data_stringify(std::string category, std::string sub_cat, std::string time_stamp);
 //Create a hash value for each traduction participation
 std::string ID_trad_file_stringify(std::string user, std::string time_stamp);
-
+//Time diff
 
 ////////
 /*FILE*/

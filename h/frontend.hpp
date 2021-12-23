@@ -2,11 +2,6 @@
 
 #include "backend.hpp"
 
-#include <string>
-
-
-
-
 struct GUI_Text {
 public:
     std::string txt = "";
@@ -56,13 +51,21 @@ private :
     //File and project management
     std::string _translation_folder_path = "translation";
     std::string _project_name = "bohemian";
-    void save();
+    void save(std::string path);
     void load();
-    
+    void autosave();
+    void create_new_file_trad(std::string path);
+
+    //Chrono for the autosave
+    std::chrono::steady_clock::time_point start;
+    std::chrono::steady_clock::time_point end;
 
     //INTERFACE
     void menu_bar();
     void language_selector();
     std::string project_path();
     std::string lang_file_name(std::string &lang);
+    
+
+    
 };
