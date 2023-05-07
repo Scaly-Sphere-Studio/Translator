@@ -16,10 +16,10 @@ Evaluation::Evaluation(const std::array<uint16_t, 5>& init_array)
 
 float Evaluation::average() const
 {
-	float count = 0, mean = 0;
-	for (float i = 0; i < 5; i++) {
-		count += this->at(i);
-		mean += this->at(i) * (i+1);
+	float count = 0.f, mean = 0.f;
+	for (size_t i = 0; i < 5; i++) {
+		count += static_cast<float>(at(i));
+		mean += static_cast<float>(at(i) * (i+1));
 	}
 
 	return mean / count;
@@ -29,7 +29,7 @@ uint32_t  Evaluation::count() const
 {
 	uint32_t count = 0;
 	for (uint32_t i = 0; i < 5; i++) {
-		count += this->at(i);
+		count += at(i);
 	}
 
 	return count;

@@ -22,15 +22,11 @@
     <ClInclude Include="h\backend.hpp" />
     <ClInclude Include="h\data.hpp" />
     <ClInclude Include="h\frontend.hpp" />
-    <ClInclude Include="h\imgui_impl_glfw.h" />
-    <ClInclude Include="h\imgui_impl_opengl3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="h\data.cpp" />
     <ClCompile Include="src\backend.cpp" />
     <ClCompile Include="src\frontend.cpp" />
-    <ClCompile Include="src\imgui_impl_glfw.cpp" />
-    <ClCompile Include="src\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

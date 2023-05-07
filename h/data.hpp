@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 
-#include <SSS/commons.hpp>
+#include <SSS/Commons.hpp>
 #include <nlohmann/json.hpp>
 
 class Evaluation : public std::array<uint16_t, 5>

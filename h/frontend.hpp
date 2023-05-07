@@ -41,8 +41,8 @@ private :
 
 
     //CONTEXT BEHAVIOR
-    SSS::GL::Window::Shared _window;
-    SSS::GL::Window::Args _args;
+    SSS::GL::Window*_window;
+    SSS::GL::Window::CreateArgs _args;
 
     //CATEGORY MAP FOR THE GUI
     std::vector<std::pair<uint32_t, GUI_Category>> CATEGORIES;

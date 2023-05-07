@@ -73,7 +73,7 @@ TRANSLATOR::TRANSLATOR()
     _args.title = "SSS Translator";
     _args.w = 1280;
     _args.h = 720;
-    _window = SSS::GL::Window::create(_args);
+    _window = &SSS::GL::Window::create(_args);
     _window->setVSYNC(true);
 
     //_ti.parse_info_data_to_json("translation/bohemian/bohemian.ini", true);
@@ -99,23 +99,16 @@ void TRANSLATOR::show()
     //Load both languages from the last opened one in the ini file
     load();
 
-    //  Setup Dear ImGui window
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui::GetIO().IniFilename = nullptr;
-
-    //  Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(_window->getGLFWwindow(), true);
-    ImGui_ImplOpenGL3_Init("#version 330");
+    SSS::ImGuiH::setContext(_window->getGLFWwindow());
 
     // Main loop
     while (!_window->shouldClose()) {
-        // Set GLFW context
-        SSS::GL::Context const context(_window);
+
+        SSS::GL::pollEverything();
+
         // Feed inputs to dear imgui, start new frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        if (!SSS::ImGuiH::newFrame())
+            continue;
 
         //Create and update the ImGui Window with the context info
         //FLAGS
@@ -126,34 +119,30 @@ void TRANSLATOR::show()
         window_flags |= ImGuiWindowFlags_NoTitleBar;
         window_flags |= ImGuiWindowFlags_NoDecoration;
 
-        ImGui::Begin("First language", NULL, window_flags);
-        ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-        _window.get()->getDimensions(_args.w, _args.h);
-        ImGui::SetWindowSize(ImVec2(_args.w, _args.h), ImGuiCond_Always);
+        if (ImGui::Begin("First language", NULL, window_flags))
+        {
+            ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+            _window->getDimensions(_args.w, _args.h);
+            ImGui::SetWindowSize(ImVec2(static_cast<float>(_args.w), static_cast<float>(_args.h)), ImGuiCond_Always);
 
-        //Display the menu bar
-        menu_bar();
+            //Display the menu bar
+            menu_bar();
 
-        //Display the categories
-        for (uint32_t i = 0; i < CATEGORIES.size(); i++) {
-            CATEGORIES[i].second.show();
+            //Display the categories
+            for (uint32_t i = 0; i < CATEGORIES.size(); i++) {
+                CATEGORIES[i].second.show();
+            }
+
+            autosave();
+
+            // Render dear imgui into screen
+            ImGui::End();
         }
-
-        autosave();
-
-        // Render dear imgui into screen
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        SSS::ImGuiH::render();
         _window->printFrame();
     }
 
     save(lang_file_name(_sl));
-
-    // Clean up ImGUI
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
 }
 
 
@@ -294,7 +283,7 @@ void TRANSLATOR::menu_bar()
 void TRANSLATOR::language_selector()
 {
     ImGui::Text("        Translation :");
-    int width = 150;
+    constexpr float width = 150.f;
     ImGui::SetNextItemWidth(width);
 
     //initialize to the first item of the iso languages list
